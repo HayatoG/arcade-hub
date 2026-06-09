@@ -556,15 +556,15 @@ function equipWeapon(model) {
   const inner = LIB[model].scene.clone(true);
   const box = new THREE.Box3().setFromObject(inner);
   const len = box.max.z - box.min.z;
-  // coloca a empunhadura (traseira do cano) na origem do grupo
+  // empunhadura fica no lado −Z do modelo; boca do cano no +Z
   inner.position.set(
     -(box.min.x + box.max.x) / 2,
     -(box.min.y + box.max.y) / 2,
-    -box.max.z + len * 0.14
+    -box.min.z - len * 0.14
   );
   const grip = new THREE.Group();
   grip.add(inner);
-  grip.rotation.y = Math.PI / 2;        // cano alinhado ao eixo do braço (−X)
+  grip.rotation.y = -Math.PI / 2;       // boca do cano (+Z) aponta para fora do braço (−X)
   grip.scale.setScalar(0.30 / len);     // ~1/3 da altura do boneco
   grip.position.set(-0.29, 0, 0);       // na mão (ponta do braço)
   arm.add(grip);
