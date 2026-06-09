@@ -10,8 +10,10 @@ import { GLTFLoader } from '../lib/loaders/GLTFLoader.js';
 // ------------------------------------------------------------
 const LANE = 3.6;            // meia-largura útil da ponte
 const BRIDGE_W = 10;
-const SQUAD_CAP = 24;
-const SPAWN_Z = -68;
+const VISIBLE_CAP = 160;     // bonecos azuis renderizados; acima disso viram poder de dano
+const ENEMY_CAP = 120;       // pool fixo: zero alocação durante a partida
+const BULLET_CAP = 700;
+const SPAWN_Z = -58;
 
 const WEAPONS = [
   { name: 'PISTOLA',        model: 'pistol',       rate: 420, dmg: 10, pellets: 1, area: 0 },
@@ -143,7 +145,8 @@ function makeChar(name, height, tint) {
     if (current && actions[current]) actions[current].fadeOut(0.1);
     current = n;
   };
-  return { obj, mixer, actions, play };
+  const reset = () => { mixer.stopAllAction(); current = null; };
+  return { obj, mixer, actions, play, reset };
 }
 
 // arma na mão direita (mesma técnica do Bastião 3D)
@@ -203,16 +206,18 @@ let G = null;
 const squad = [], enemies = [], bullets = [], gates = [], mixers = [];
 let leaderX = 0, targetX = 0;
 
-// formação triangular: deslocamentos por índice
+// formação triangular procedural: cresce sem limite de linhas
 const FORMATION = [];
-{
-  let i = 0;
-  for (let row = 0; row < 8 && i < 40; row++) {
-    const n = row + 1;
-    for (let k = 0; k < n && i < 40; k++, i++) {
-      FORMATION.push({ x: (k - (n - 1) / 2) * 0.85, z: row * 0.8 });
-    }
+function formationOffset(i) {
+  while (FORMATION.length <= i) {
+    const idx = FORMATION.length;
+    let row = 0, acc = 0;
+    while (acc + Math.min(row + 1, 10) <= idx) { acc += Math.min(row + 1, 10); row++; }
+    const cols = Math.min(row + 1, 10);
+    const k = idx - acc;
+    FORMATION.push({ x: (k - (cols - 1) / 2) * 0.72, z: row * 0.68 });
   }
+  return FORMATION[i];
 }
 
 function loadRecord() { try { return parseInt(localStorage.getItem('mare_record') || '0', 10) || 0; } catch (e) { return 0; } }
@@ -222,15 +227,65 @@ const bulletGeo = new THREE.CapsuleGeometry(0.09, 0.5, 2, 6);
 const bulletMat = new THREE.MeshBasicMaterial({ color: 0x9cd8ff });
 const rocketMat = new THREE.MeshBasicMaterial({ color: 0xffb060 });
 
+// ---- pool de projéteis: malhas pré-criadas, nunca alocadas em jogo ----
+const bulletPool = [];
+function initBulletPool() {
+  for (let i = 0; i < BULLET_CAP; i++) {
+    const m = new THREE.Mesh(bulletGeo, bulletMat);
+    m.rotation.x = Math.PI / 2;
+    m.visible = false;
+    scene.add(m);
+    bulletPool.push(m);
+  }
+}
+function getBulletMesh(rocket) {
+  const m = bulletPool.pop();
+  if (!m) return null;
+  m.material = rocket ? rocketMat : bulletMat;
+  m.visible = true;
+  return m;
+}
+function releaseBulletMesh(m) {
+  m.visible = false;
+  bulletPool.push(m);
+}
+
+// ---- pool de inimigos: bonecos clonados uma única vez e reciclados ----
+const enemyPool = [];
+function initEnemyPool() {
+  const tints = [0xff7a6a, 0xe85a4a, 0xd84838, 0xc83a3a];
+  for (let i = 0; i < ENEMY_CAP; i++) {
+    const ch = makeChar(ENEMY_MODELS[i % ENEMY_MODELS.length], 1.5, tints[i % tints.length]);
+    ch.obj.visible = false;
+    scene.add(ch.obj);
+    enemyPool.push(ch);
+  }
+}
+
+// ---- pool de soldados azuis: criados sob demanda, sempre reciclados ----
+const soldierPool = [];
+function getSoldier() {
+  let ch = soldierPool.pop();
+  if (!ch) {
+    ch = makeChar('character-a', 1.5, 0x7aa8ff);
+    ch.obj.rotation.y = Math.PI;
+    scene.add(ch.obj);
+  } else {
+    ch.reset();
+    ch.obj.visible = true;
+  }
+  return ch;
+}
+
 // ------------------------------------------------------------
 // Esquadrão
 // ------------------------------------------------------------
+// SEM teto: além de VISIBLE_CAP bonecos, os excedentes viram poder de fogo
+// (cada soldado "virtual" soma dano — o pelotão nunca para de crescer)
 function addSoldiers(n) {
-  for (let i = 0; i < n && squad.length < SQUAD_CAP; i++) {
-    const ch = makeChar('character-a', 1.5, 0x7aa8ff);
-    ch.obj.rotation.y = Math.PI;          // de costas para a câmera, marchando
-    scene.add(ch.obj);
-    mixers.push(ch.mixer);
+  G.totalSquad += n;
+  while (squad.length < Math.min(G.totalSquad, VISIBLE_CAP)) {
+    const ch = getSoldier();
     ch.play('walk');
     ch.actions['walk'].timeScale = rand(0.9, 1.15);
     equipWeapon(ch, WEAPONS[G.weapon].model);
@@ -239,34 +294,64 @@ function addSoldiers(n) {
   updateHUD();
 }
 
+// multiplicador dos soldados além do limite visível
+function virtualMul() {
+  return squad.length > 0 ? G.totalSquad / squad.length : 1;
+}
+
 function loseSoldier() {
-  const s = squad.pop();
-  if (!s) return;
-  s.ch.play('die', true);
+  G.totalSquad--;
+  if (G.totalSquad < squad.length) {
+    const s = squad.pop();
+    if (s) {
+      s.ch.play('die', true);
+      const ch = s.ch;
+      setTimeout(() => { ch.obj.visible = false; ch.reset(); soldierPool.push(ch); }, 700);
+    }
+  }
   AudioSys.play('hurt', 0.5);
   shake = Math.min(0.5, shake + 0.18);
-  setTimeout(() => scene.remove(s.ch.obj), 700);
-  if (squad.length === 0) endGame();
+  if (G.totalSquad <= 0) endGame();
   updateHUD();
 }
 
 // ------------------------------------------------------------
 // Inimigos
 // ------------------------------------------------------------
-function spawnEnemy(isBoss = false) {
-  const mult = 1 + G.meters / 160;
-  const tint = isBoss ? 0xb01418 : pick([0xff7a6a, 0xe85a4a, 0xd84838, 0xc83a3a]);
-  const ch = makeChar(pick(ENEMY_MODELS), isBoss ? 4.6 : 1.5, tint);
-  ch.obj.position.set(isBoss ? 0 : rand(-LANE, LANE), 0, SPAWN_Z + rand(-4, 4));
-  scene.add(ch.obj);
-  mixers.push(ch.mixer);
+// onda de inimigos: clusters que crescem EXPONENCIALMENTE com a distância
+function spawnCluster() {
+  const n = Math.min(Math.round(3 + Math.pow(1.6, G.meters / 140)), 22);
+  const cx = rand(-LANE * 0.6, LANE * 0.6);
+  for (let i = 0; i < n; i++) {
+    if (enemies.length >= ENEMY_CAP) return;
+    spawnEnemy(false, cx + rand(-2.4, 2.4), rand(-7, 3));
+  }
+}
+
+function spawnEnemy(isBoss = false, x = 0, dz = 0) {
+  const mult = 1 + G.meters / 120;
+  let ch;
+  if (isBoss) {
+    ch = makeChar(pick(ENEMY_MODELS), 4.6, 0xb01418);
+    ch.obj.position.set(0, 0, SPAWN_Z + dz);
+    scene.add(ch.obj);
+  } else {
+    ch = enemyPool.pop();                 // reuso: nenhuma alocação em jogo
+    if (!ch) return;
+    ch.reset();
+    ch.obj.visible = true;
+    ch.obj.position.set(clamp(x, -LANE, LANE), 0, SPAWN_Z + dz);
+  }
   ch.play(isBoss ? 'walk' : 'sprint');
   const e = {
     ch, isBoss,
-    hp: isBoss ? Math.round(550 * mult) : Math.round(13 * mult),
-    spd: isBoss ? 1.0 : rand(1.6, 2.6),
+    hp: isBoss ? Math.round(550 * mult) : Math.round(10 * mult),
+    spd: isBoss ? 1.4 : rand(2.6, 4.2),
     dying: 0,
   };
+  // passada da animação acompanha a velocidade real (corrida natural)
+  const run = ch.actions[isBoss ? 'walk' : 'sprint'];
+  if (run) run.timeScale = e.spd / (isBoss ? 1.4 : 3.0);
   e.maxHp = e.hp;
   if (isBoss) {
     e.label = textSprite(String(e.hp), '#ffffff');
@@ -298,12 +383,16 @@ function damageEnemy(e, dmg) {
 // Portões de upgrade
 // ------------------------------------------------------------
 const GATE_TYPES = [
-  { kind: 'soldiers', n: 2, label: '+2', color: '#8af0ff', w: 30 },
+  { kind: 'soldiers', n: 1, label: '+1', color: '#8af0ff', w: 18 },
+  { kind: 'soldiers', n: 2, label: '+2', color: '#8af0ff', w: 24 },
   { kind: 'soldiers', n: 4, label: '+4', color: '#8af0ff', w: 14 },
-  { kind: 'double',   label: '×2', color: '#ffd23e', w: 8 },
-  { kind: 'damage',   label: 'DANO +25%', color: '#ff9c6a', w: 16 },
-  { kind: 'rate',     label: 'CADÊNCIA +20%', color: '#b0ff8a', w: 16 },
-  { kind: 'weapon',   label: 'ARMA', color: '#ffffff', w: 16 },
+  { kind: 'soldiers', n: 6, label: '+6', color: '#5af0c8', w: 7 },
+  { kind: 'double',   label: '×2', color: '#ffd23e', w: 7 },
+  { kind: 'damage',   label: 'DANO +25%', color: '#ff9c6a', w: 15 },
+  { kind: 'damage2',  label: 'DANO +50%', color: '#ff7a3a', w: 6 },
+  { kind: 'rate',     label: 'CADÊNCIA +20%', color: '#b0ff8a', w: 15 },
+  { kind: 'rate2',    label: 'CADÊNCIA +35%', color: '#7aff5a', w: 6 },
+  { kind: 'weapon',   label: 'ARMA', color: '#ffffff', w: 20 },
 ];
 
 function pickGateType(excludeWeapon) {
@@ -368,10 +457,12 @@ function spawnGate(x, type) {
 function applyGate(type) {
   AudioSys.play(type.kind === 'weapon' ? 'upgrade' : 'gate', 0.7);
   switch (type.kind) {
-    case 'soldiers': addSoldiers(type.n); announce('+' + type.n + ' SOLDADOS'); break;
-    case 'double': addSoldiers(squad.length); announce('PELOTÃO ×2!'); break;
+    case 'soldiers': addSoldiers(type.n); announce('+' + type.n + (type.n === 1 ? ' SOLDADO' : ' SOLDADOS')); break;
+    case 'double': addSoldiers(G.totalSquad); announce('PELOTÃO ×2!'); break;
     case 'damage': G.dmgMul *= 1.25; announce('DANO +25%'); break;
+    case 'damage2': G.dmgMul *= 1.5; announce('DANO +50%!'); break;
     case 'rate': G.rateMul *= 0.8; announce('CADÊNCIA +20%'); break;
+    case 'rate2': G.rateMul *= 0.65; announce('CADÊNCIA +35%!'); break;
     case 'weapon':
       if (G.weapon < WEAPONS.length - 1) {
         G.weapon++;
@@ -388,13 +479,17 @@ function applyGate(type) {
 // ------------------------------------------------------------
 function startGame() {
   for (const s of squad) scene.remove(s.ch.obj);
-  for (const e of enemies) scene.remove(e.ch.obj);
-  for (const b of bullets) scene.remove(b.obj);
+  for (const e of enemies) {
+    if (e.label) scene.remove(e.label);
+    if (e.isBoss) scene.remove(e.ch.obj);
+    else { e.ch.obj.visible = false; e.ch.reset(); enemyPool.push(e.ch); }
+  }
+  for (const b of bullets) releaseBulletMesh(b.obj);
   for (const g of gates) scene.remove(g.obj);
   squad.length = enemies.length = bullets.length = gates.length = mixers.length = 0;
 
   G = {
-    meters: 0, kills: 0, weapon: 0,
+    meters: 0, kills: 0, weapon: 0, totalSquad: 0,
     dmgMul: 1, rateMul: 1,
     speed: 3.2, spawnCd: 1200, nextGate: 40, nextBoss: 300,
     over: false,
@@ -441,7 +536,7 @@ function announce(msg, dur = 1500) {
 function updateHUD() {
   $('meters').textContent = Math.floor(G.meters) + ' m';
   $('record-live').textContent = 'recorde ' + Math.max(loadRecord(), Math.floor(G.meters)) + ' m';
-  $('squad').textContent = '⛨ ' + squad.length;
+  $('squad').textContent = '⛨ ' + G.totalSquad;
   $('weapon').textContent = WEAPONS[G.weapon].name +
     (G.dmgMul > 1 ? ' · dano ×' + G.dmgMul.toFixed(2).replace(/\.?0+$/, '') : '');
   $('kills').textContent = 'abates: ' + G.kills;
@@ -479,11 +574,14 @@ $('btn-retry').addEventListener('click', () => { AudioSys.unlock(); startGame();
 // ------------------------------------------------------------
 const clock = new THREE.Clock();
 let shake = 0, time = 0;
+let fpsFrames = 0, fpsAcc = 0, fpsValue = 60;
 
 function tick() {
   requestAnimationFrame(tick);
   const dt = Math.min(0.05, clock.getDelta());
   time += dt;
+  fpsFrames++; fpsAcc += dt;
+  if (fpsAcc >= 1) { fpsValue = fpsFrames / fpsAcc; fpsFrames = 0; fpsAcc = 0; }
 
   for (const m of mixers) m.update(dt);
   if (state === ST.PLAYING) update(dt);
@@ -516,8 +614,10 @@ function update(dt) {
   leaderX = lerp(leaderX, targetX, 8 * dt);
 
   // ---- esquadrão em formação ----
+  const vMul = virtualMul();
   squad.forEach((s, i) => {
-    const f = FORMATION[i] || FORMATION[FORMATION.length - 1];
+    s.ch.mixer.update(dt);
+    const f = formationOffset(i);
     const sx = leaderX + f.x, sz = f.z;
     s.ch.obj.position.x = lerp(s.ch.obj.position.x, clamp(sx, -LANE - 0.4, LANE + 0.4), 10 * dt);
     s.ch.obj.position.z = lerp(s.ch.obj.position.z, sz, 10 * dt);
@@ -529,11 +629,10 @@ function update(dt) {
       s.fireCd = w.rate * G.rateMul * rand(0.92, 1.08);
       for (let p = 0; p < w.pellets; p++) {
         const spread = w.pellets > 1 ? (p - (w.pellets - 1) / 2) * 0.5 : rand(-0.06, 0.06);
-        const b = new THREE.Mesh(bulletGeo, w.area ? rocketMat : bulletMat);
-        b.rotation.x = Math.PI / 2;
+        const b = getBulletMesh(w.area > 0);          // do pool, sem alocação
+        if (!b) break;
         b.position.set(s.ch.obj.position.x, 1.1, s.ch.obj.position.z - 0.5);
-        scene.add(b);
-        bullets.push({ obj: b, vx: spread * 6, dmg: w.dmg * G.dmgMul, area: w.area, life: 2.6 });
+        bullets.push({ obj: b, vx: spread * 6, dmg: w.dmg * G.dmgMul * vMul, area: w.area, life: 2.6 });
       }
       if (i === 0) AudioSys.play('shot', 0.12);
     }
@@ -563,24 +662,30 @@ function update(dt) {
         }
       } else damageEnemy(hit, b.dmg);
     }
-    if (hit || b.life <= 0) { scene.remove(b.obj); bullets.splice(i, 1); }
+    if (hit || b.life <= 0) { releaseBulletMesh(b.obj); bullets.splice(i, 1); }
   }
 
   // ---- inimigos ----
   for (let i = enemies.length - 1; i >= 0; i--) {
     const e = enemies[i];
     const ep = e.ch.obj.position;
+    e.ch.mixer.update(dt);   // só inimigos ativos animam
     if (e.dying) {
       e.dying -= dt;
       if (e.label) { scene.remove(e.label); e.label = null; }
-      if (e.dying <= 0) { scene.remove(e.ch.obj); enemies.splice(i, 1); }
+      if (e.dying <= 0) {
+        if (e.isBoss) scene.remove(e.ch.obj);
+        else { e.ch.obj.visible = false; e.ch.reset(); enemyPool.push(e.ch); }  // recicla
+        enemies.splice(i, 1);
+      }
       continue;
     }
-    ep.z += (G.speed * 0.45 + e.spd) * dt;
+    // avança de verdade: marcha da ponte + corrida própria
+    ep.z += (G.speed + e.spd) * dt;
     if (e.label) e.label.position.set(ep.x, 5.6, ep.z);
-    // converge para o pelotão quando perto
-    if (ep.z > -14) ep.x = lerp(ep.x, leaderX, 0.5 * dt);
-    e.ch.obj.rotation.y = Math.atan2(leaderX - ep.x, 2);
+    // converge para o pelotão gradualmente
+    if (ep.z > -30) ep.x = lerp(ep.x, leaderX, (ep.z > -12 ? 0.9 : 0.3) * dt);
+    e.ch.obj.rotation.y = Math.atan2(leaderX - ep.x, 4);
 
     if (ep.z > -0.4) {
       // alcançou o pelotão
@@ -606,16 +711,15 @@ function update(dt) {
     if (g.obj.position.z > 6) { scene.remove(g.obj); gates.splice(i, 1); }
   }
 
-  // ---- spawns ----
+  // ---- spawns: a maré não para ----
   G.spawnCd -= ms;
   if (G.spawnCd <= 0) {
-    G.spawnCd = Math.max(260, 1100 - G.meters * 1.6);
-    spawnEnemy();
-    if (G.meters > 120 && Math.random() < 0.5) spawnEnemy();
-    if (G.meters > 320 && Math.random() < 0.4) spawnEnemy();
+    G.spawnCd = Math.max(380, 1200 - G.meters * 2.2);
+    spawnCluster();
+    if (G.meters > 150 && Math.random() < 0.5) spawnCluster();
   }
   if (G.meters >= G.nextGate) {
-    G.nextGate += rand(95, 130);
+    G.nextGate += rand(55, 75);
     spawnGatePair();
   }
   if (G.meters >= G.nextBoss) {
@@ -638,6 +742,8 @@ if (document.fonts && document.fonts.load) {
 }
 
 Promise.all(MODELS.map(loadModel)).then(() => {
+  initBulletPool();
+  initEnemyPool();
   document.getElementById('loading').classList.add('hidden');
   AudioSys.playMusic('menu');
   tick();
@@ -650,8 +756,12 @@ Promise.all(MODELS.map(loadModel)).then(() => {
 window.__MV = {
   get state() { return state; },
   get meters() { return G ? Math.floor(G.meters) : 0; },
-  get squad() { return squad.length; },
+  get squad() { return G ? G.totalSquad : 0; },
+  get visible() { return squad.length; },
   get enemies() { return enemies.length; },
+  get pool() { return enemyPool.length; },
+  get bulletsLive() { return bullets.length; },
+  get fps() { return Math.round(fpsValue); },
   get kills() { return G ? G.kills : 0; },
   get weapon() { return G ? G.weapon : 0; },
   get gates() { return gates.length; },

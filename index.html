@@ -19,6 +19,36 @@
     <p class="sub">cinco jogos · uma galáxia · zero moedas</p>
   </header>
 
+  <!-- Carrossel de destaque -->
+  <section class="carousel" id="carousel" aria-label="Destaques">
+    <div class="car-track" id="car-track">
+      <a class="car-slide" href="../nova-strike/" data-nova>
+        <img src="assets/shots/nova-strike.png" alt="NOVA STRIKE">
+        <div class="car-info"><span class="badge badge-2d">2D · SHMUP</span><h3>NOVA STRIKE</h3><span class="car-play">▶ JOGAR</span></div>
+      </a>
+      <a class="car-slide" href="turbo-rush/">
+        <img src="assets/shots/turbo-rush.png" alt="TURBO RUSH">
+        <div class="car-info"><span class="badge badge-3d">3D · RACER</span><h3>TURBO RUSH</h3><span class="car-play">▶ JOGAR</span></div>
+      </a>
+      <a class="car-slide" href="ultimo-bastiao/">
+        <img src="assets/shots/ultimo-bastiao.png" alt="ÚLTIMO BASTIÃO">
+        <div class="car-info"><span class="badge badge-srv">2D · SURVIVAL</span><h3>ÚLTIMO BASTIÃO</h3><span class="car-play">▶ JOGAR</span></div>
+      </a>
+      <a class="car-slide" href="bastiao-3d/">
+        <img src="assets/shots/bastiao-3d.png" alt="ÚLTIMO BASTIÃO 3D">
+        <div class="car-info"><span class="badge badge-cripta">3D · ISOMÉTRICO</span><h3>ÚLTIMO BASTIÃO 3D</h3><span class="car-play">▶ JOGAR</span></div>
+      </a>
+      <a class="car-slide" href="mare-vermelha/">
+        <img src="assets/shots/mare-vermelha.png" alt="MARÉ VERMELHA">
+        <div class="car-info"><span class="badge badge-mare">3D · HORDA</span><h3>MARÉ VERMELHA</h3><span class="car-play">▶ JOGAR</span></div>
+      </a>
+      <div class="scan"></div>
+    </div>
+    <button class="car-arrow car-prev" id="car-prev" aria-label="Anterior">‹</button>
+    <button class="car-arrow car-next" id="car-next" aria-label="Próximo">›</button>
+    <div class="car-dots" id="car-dots"></div>
+  </section>
+
   <main class="cabinets">
     <!-- NOVA STRIKE -->
     <a class="cab cab-nova" id="link-nova" href="../nova-strike/">
@@ -105,8 +135,53 @@
   <script>
     // em produção (GitHub Pages) o NOVA STRIKE mora em outro repositório
     if (location.hostname.endsWith('github.io')) {
-      document.getElementById('link-nova').href = 'https://hayatog.github.io/nova-strike/';
+      document.querySelectorAll('#link-nova, [data-nova]').forEach(a => {
+        a.href = 'https://hayatog.github.io/nova-strike/';
+      });
     }
+
+    // ---- carrossel ----
+    (() => {
+      const track = document.getElementById('car-track');
+      const slides = [...track.querySelectorAll('.car-slide')];
+      const dotsBox = document.getElementById('car-dots');
+      let idx = 0, timer = null;
+
+      slides.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'car-dot';
+        d.setAttribute('aria-label', 'Slide ' + (i + 1));
+        d.addEventListener('click', () => go(i, true));
+        dotsBox.appendChild(d);
+      });
+      const dots = [...dotsBox.children];
+
+      function go(i, manual) {
+        idx = (i + slides.length) % slides.length;
+        slides.forEach((s, k) => s.classList.toggle('active', k === idx));
+        dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+        if (manual) restart();
+      }
+      function next() { go(idx + 1); }
+      function restart() { clearInterval(timer); timer = setInterval(next, 4000); }
+
+      document.getElementById('car-prev').addEventListener('click', () => go(idx - 1, true));
+      document.getElementById('car-next').addEventListener('click', () => go(idx + 1, true));
+      const box = document.getElementById('carousel');
+      box.addEventListener('mouseenter', () => clearInterval(timer));
+      box.addEventListener('mouseleave', restart);
+      // deslize no celular
+      let sx = null;
+      box.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+      box.addEventListener('touchend', e => {
+        if (sx === null) return;
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) go(idx + (dx < 0 ? 1 : -1), true);
+        sx = null;
+      }, { passive: true });
+
+      go(0); restart();
+    })();
     // cache-busting: cada visita gera links únicos, forçando HTML fresco dos jogos
     document.querySelectorAll('.cab').forEach(a => {
       a.addEventListener('click', () => {
