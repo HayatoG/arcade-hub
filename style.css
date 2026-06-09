@@ -144,6 +144,7 @@ header { text-align: center; z-index: 1; }
 .badge-3d { background: rgba(70,230,200,.14); color: var(--neon-teal); border: 1px solid var(--neon-teal); }
 .badge-srv { background: rgba(110,220,90,.14); color: #6edc5a; border: 1px solid #6edc5a; }
 .badge-cripta { background: rgba(200,60,70,.14); color: #e85a64; border: 1px solid #e85a64; }
+.badge-mare { background: rgba(74,138,223,.16); color: #6aa4ef; border: 1px solid #6aa4ef; }
 
 .cab h2 {
   font-family: 'Kenney Future', sans-serif;
@@ -155,8 +156,11 @@ header { text-align: center; z-index: 1; }
 .cab-bastiao:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(110,220,90,.3); border-color: #6edc5a; }
 .cab-cripta h2 { color: #e85a64; text-shadow: 0 0 16px rgba(232,90,100,.45); }
 .cab-cripta:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(232,90,100,.3); border-color: #e85a64; }
+.cab-mare h2 { color: #6aa4ef; text-shadow: 0 0 16px rgba(106,164,239,.45); }
+.cab-mare:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(106,164,239,.3); border-color: #6aa4ef; }
 .cab:nth-child(3) { transform: rotate(-0.8deg); }
 .cab:nth-child(4) { transform: rotate(0.9deg); }
+.cab:nth-child(5) { transform: rotate(-1deg); }
 
 .cab p { font-size: 14px; line-height: 1.55; color: var(--dim); }
 

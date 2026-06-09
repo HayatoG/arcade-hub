@@ -11,6 +11,16 @@ assets [Kenney](https://kenney.nl) (CC0).
 | TURBO RUSH (`turbo-rush/`) | Racer infinito 3D | Three.js + glTF |
 | ÚLTIMO BASTIÃO (`ultimo-bastiao/`) | Survivors + tower defense | Phaser |
 | ÚLTIMO BASTIÃO 3D (`bastiao-3d/`) | Survivors isométrico (estilo Diablo) | Three.js + glTF animado |
+| MARÉ VERMELHA (`mare-vermelha/`) | Bridge runner de horda infinita | Three.js + glTF animado |
+
+## MARÉ VERMELHA — a ponte infinita
+
+Runner de horda no estilo "Last War": o pelotão azul marcha pela ponte com
+**tiro automático** enquanto a maré vermelha desce sem fim. Atravesse portões
+para somar e multiplicar soldados, ganhar dano/cadência e pegar **armas novas
+sobre as caixas** (pistola → espingarda → uzi → metralhadora → lança-foguetes
+com dano em área). Gigantes com número de HP na cabeça aparecem a cada 320 m.
+Não há vitória — só o recorde de distância.
 
 ## ÚLTIMO BASTIÃO — sobreviva à horda
 

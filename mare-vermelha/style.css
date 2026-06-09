@@ -1,0 +1,108 @@
+@font-face {
+  font-family: 'Kenney Future';
+  src: url('assets/fonts/Kenney Future Square.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Kenney Mono';
+  src: url('assets/fonts/Kenney Mini Square Mono.ttf') format('truetype');
+}
+
+:root {
+  --azul: #4a8adf;
+  --vermelho: #d8323c;
+  --branco: #eef2f8;
+  --oceano: #0e1626;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--oceano);
+  font-family: 'Kenney Mono', monospace;
+  touch-action: none;
+}
+
+#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+.hidden { display: none !important; }
+
+/* ---------- HUD ---------- */
+#hud {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between;
+  padding: 16px 20px; pointer-events: none;
+  text-shadow: 0 2px 0 rgba(0,0,0,.55);
+}
+.big { font-family: 'Kenney Future', sans-serif; font-size: clamp(20px, 3.4vw, 30px); color: var(--branco); }
+.small { font-size: clamp(11px, 1.6vw, 14px); color: #9ab4d8; margin-top: 4px; }
+.hud-right { text-align: right; }
+.hud-right .big { color: var(--azul); }
+
+#announce {
+  position: fixed; top: 24%; left: 50%; transform: translateX(-50%);
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(20px, 4vw, 36px); color: var(--branco);
+  text-align: center; white-space: pre-line;
+  text-shadow: 0 0 20px rgba(74,138,223,.9), 0 3px 0 #000;
+  opacity: 0; transition: opacity .25s; pointer-events: none;
+}
+#announce.show { opacity: 1; }
+
+/* ---------- Overlays ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; text-align: center; padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(74,138,223,.18), transparent 55%),
+    radial-gradient(ellipse at 50% 115%, rgba(216,50,60,.22), transparent 55%),
+    rgba(8, 12, 22, .93);
+}
+
+.kicker { font-size: clamp(10px, 1.5vw, 13px); letter-spacing: .45em; color: var(--azul); }
+
+h1 {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(44px, 9vw, 92px); line-height: 1;
+  color: var(--branco);
+  text-shadow: 0 0 28px rgba(74,138,223,.5), 4px 4px 0 #15233a;
+}
+h1 span { display: block; color: var(--vermelho); text-shadow: 0 0 28px rgba(216,50,60,.6), 4px 4px 0 #3a1014; }
+
+h2 {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(34px, 7vw, 60px); color: var(--vermelho);
+  text-shadow: 0 0 24px rgba(216,50,60,.6);
+}
+
+.tagline { color: #8a9ab8; font-size: clamp(11px, 1.7vw, 14px); letter-spacing: .2em; }
+
+.story {
+  max-width: 580px; color: #c4d2e8;
+  font-size: clamp(13px, 1.9vw, 16px); line-height: 1.7;
+}
+.story b { color: var(--azul); }
+
+.stats { color: var(--branco); font-size: clamp(15px, 2.2vw, 19px); line-height: 1.9; }
+.stats b { color: #ffd23e; }
+
+.big-btn {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(17px, 2.8vw, 23px);
+  background: var(--azul); color: var(--branco);
+  border: none; padding: 14px 34px; cursor: pointer;
+  box-shadow: 0 6px 0 #24508a, 0 0 28px rgba(74,138,223,.4);
+  transition: transform .1s, box-shadow .1s;
+}
+.big-btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 #24508a, 0 0 28px rgba(74,138,223,.4); }
+
+.help { font-size: clamp(11px, 1.5vw, 13px); color: #64748f; }
+.credits { font-size: 11px; color: #46506a; }
+.credits a { color: var(--azul); text-decoration: none; }
+
+/* ---------- CRT ---------- */
+.crt {
+  position: fixed; inset: 0; z-index: 80; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, transparent 1px 4px);
+}
