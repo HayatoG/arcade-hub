@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ÚLTIMO BASTIÃO 3D — A Cripta</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div id="coins" class="big">⬤ 0</div>
+      <div id="kills" class="small">abates: 0</div>
+      <div id="weapon" class="small">arma: PISTOLA</div>
+    </div>
+    <div id="wave" class="hud-center">ONDA 1/12</div>
+    <div class="hud-right">
+      <div class="bar-row"><span>VOCÊ</span><div class="bar"><div id="hp-player" class="fill green"></div></div></div>
+      <div class="bar-row"><span>BASE</span><div class="bar"><div id="hp-base" class="fill orange"></div></div></div>
+    </div>
+  </div>
+  <div id="tower-info" class="hidden">
+    <div id="tower-name">TORRE: RUÍNA → depósito 0/60</div>
+    <div class="bar wide"><div id="tower-fill" class="fill gold"></div></div>
+  </div>
+  <div id="announce"></div>
+  <div id="vignette"></div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>ÚLTIMO<span>BASTIÃO 3D</span></h1>
+    <p class="tagline">a cripta · visão isométrica · noite eterna</p>
+    <p class="story">A névoa cobriu o cemitério e os mortos caminham.
+      Zumbis, esqueletos, fantasmas e vampiros virão em 12 ondas.<br><br>
+      Colete as moedas que eles derrubam e fique sobre o <b>QUADRADO DOURADO</b>
+      para depositá-las: a torre central cresce sozinha — balista, canhão,
+      torretas e catapulta com dano em área.<br><br>
+      Seu tiro é automático. Sobreviva à noite.</p>
+    <button id="btn-start" class="big-btn">⚔ ENFRENTAR A NOITE ⏎</button>
+    <p class="help">WASD/setas ou arrastar o dedo · tiro automático · M som</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · recorde de ondas: <span id="record">0</span> · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Fim -->
+  <div id="end" class="overlay hidden">
+    <h2 id="end-title">FIM DA LINHA</h2>
+    <p id="end-reason" class="story"></p>
+    <p id="end-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">TENTAR DE NOVO ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">ERGUENDO A CRIPTA...</p></div>
+  <div class="crt"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script>
+    document.write('<script type="module" src="js/game.js?v=' + __V + '"><\/script>');
+  </script>
+</body>
+</html>

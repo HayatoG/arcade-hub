@@ -10,6 +10,7 @@ assets [Kenney](https://kenney.nl) (CC0).
 | [NOVA STRIKE](https://github.com/HayatoG/nova-strike) | Shoot 'em up vertical 2D | Canvas 2D puro |
 | TURBO RUSH (`turbo-rush/`) | Racer infinito 3D | Three.js + glTF |
 | ÚLTIMO BASTIÃO (`ultimo-bastiao/`) | Survivors + tower defense | Phaser |
+| ÚLTIMO BASTIÃO 3D (`bastiao-3d/`) | Survivors isométrico (estilo Diablo) | Three.js + glTF animado |
 
 ## ÚLTIMO BASTIÃO — sobreviva à horda
 
