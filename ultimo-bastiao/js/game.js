@@ -109,8 +109,9 @@ class MenuScene extends Phaser.Scene {
       .setOrigin(0.5).setShadow(0, 0, '#a05a10', 24, true, true);
 
     const story = 'O mundo caiu. Resta uma ruína no meio do campo — e você.\n' +
-      'Zumbis virão em 12 ondas. Cada moeda coletada reconstrói a torre\n' +
-      'automaticamente: dela nascerão canhões, muralhas e mísseis.\n\nDefenda o último bastião da humanidade.';
+      'Zumbis virão em 12 ondas. Colete as moedas que eles derrubam e\n' +
+      'fique sobre o QUADRADO DE DEPÓSITO para transferi-las à torre:\n' +
+      'ela cresce sozinha — canhões, muralhas, torretas e mísseis.\n\nDefenda o último bastião da humanidade.';
     this.add.text(w / 2, h * 0.47, story, { fontFamily: 'Kenney Mono, monospace', fontSize: Math.min(17, w / 38), color: '#bcd8b4', align: 'center', lineSpacing: 8 }).setOrigin(0.5);
 
     // vitrine: jogador e zumbis
@@ -146,7 +147,7 @@ class GameScene extends Phaser.Scene {
     S.cameras.main.setBounds(0, 0, WORLD_W, WORLD_H);
 
     // estado da partida
-    S.coins = 0; S.totalCoins = 0; S.kills = 0;
+    S.coins = 0; S.totalCoins = 0; S.deposited = 0; S.depositCd = 0; S.kills = 0;
     S.wave = 0; S.waveState = 'break'; S.waveTimer = 3500; S.spawnTimer = 0;
     S.towerLevel = 0; S.weaponLevel = 0;
     S.playerHp = 100; S.playerMaxHp = 100;
@@ -164,6 +165,12 @@ class GameScene extends Phaser.Scene {
     S.splats = [];
 
     S.buildBase();
+
+    // pad de depósito: fique sobre ele para transferir moedas à torre
+    S.pad = S.add.image(CX, CY + 185, 'tplat2').setScale(1.15).setDepth(2).setAlpha(0.95);
+    S.tweens.add({ targets: S.pad, alpha: 0.55, scale: 1.05, duration: 700, yoyo: true, repeat: -1 });
+    S.add.text(CX, CY + 235, 'DEPÓSITO', { fontFamily: 'Kenney Mono, monospace', fontSize: 14, color: '#ffd23e' })
+      .setOrigin(0.5).setDepth(2).setShadow(0, 2, '#000', 3);
 
     // jogador
     S.player = S.physics.add.sprite(CX, CY + 150, 'p_gun').setScale(0.85);
@@ -201,13 +208,18 @@ class GameScene extends Phaser.Scene {
 
     // handle de testes
     window.__UB = {
-      get wave() { return S.wave; }, get coins() { return S.totalCoins; },
+      get wave() { return S.wave; }, get coins() { return S.coins; },
+      get deposited() { return S.deposited; },
       get kills() { return S.kills; }, get towerLevel() { return S.towerLevel; },
       get zombies() { return S.zombies.countActive(true); },
       get playerHp() { return S.playerHp; }, get baseHp() { return S.baseHp; },
       get over() { return S.gameOver; },
-      addCoins: n => { S.totalCoins += n; S.coins += n; S.checkTowerUpgrade(); },
+      addCoins: n => { S.totalCoins += n; S.coins += n; },
+      setPos: (x, y) => { S.player.setPosition(x, y); },
     };
+
+    // instrução inicial
+    S.time.delayedCall(1200, () => S.announce('COLETE MOEDAS E FIQUE\nNO QUADRADO P/ DEPOSITAR', '#ffd23e'));
   }
 
   // ---------------- mundo ----------------
@@ -279,12 +291,6 @@ class GameScene extends Phaser.Scene {
       }
     }
 
-    // corpo físico da base (área que os zumbis atacam)
-    if (!S.baseZone) {
-      S.baseZone = S.add.zone(CX, CY, 170, 170);
-      S.physics.add.existing(S.baseZone, true);
-      S.physics.add.overlap(S.baseZone, S.zombies, (b, z) => S.zombieAttack(z, 'base'));
-    }
   }
 
   // ---------------- HUD ----------------
@@ -315,22 +321,22 @@ class GameScene extends Phaser.Scene {
 
   updateHUD() {
     const S = this;
-    S.ui.coins.setText('⬤ ' + S.coins + ' moedas');
+    S.ui.coins.setText('⬤ ' + S.coins + ' moedas carregadas');
     S.ui.kills.setText('abates: ' + S.kills);
     S.ui.weapon.setText('arma: ' + WEAPON_LEVELS[S.weaponLevel].name);
     S.ui.wave.setText(S.waveState === 'break' && S.wave < LAST_WAVE ? 'PREPARE-SE...' : 'ONDA ' + S.wave + '/' + LAST_WAVE);
 
-    // barra de progresso da torre
+    // barra de progresso da torre (moedas DEPOSITADAS no quadrado)
     const g = S.ui.towerBar;
     g.clear();
     const next = TOWER_LEVELS[S.towerLevel + 1];
     const w = 230, x = 16, y = S.scale.height - 56;
     if (next) {
-      const fr = Phaser.Math.Clamp(S.totalCoins / next.cost, 0, 1);
+      const fr = Phaser.Math.Clamp(S.deposited / next.cost, 0, 1);
       g.fillStyle(0x000000, 0.5).fillRect(x, y, w, 14);
       g.fillStyle(0xe8c838, 1).fillRect(x, y, w * fr, 14);
       g.lineStyle(1, 0xffffff, 0.4).strokeRect(x, y, w, 14);
-      S.ui.towerName.setText('TORRE: ' + TOWER_LEVELS[S.towerLevel].name + '  →  ' + S.totalCoins + '/' + next.cost);
+      S.ui.towerName.setText('TORRE: ' + TOWER_LEVELS[S.towerLevel].name + '  →  depósito ' + S.deposited + '/' + next.cost);
     } else {
       S.ui.towerName.setText('TORRE: ' + TOWER_LEVELS[S.towerLevel].name + ' (MÁX)');
     }
@@ -486,11 +492,24 @@ class GameScene extends Phaser.Scene {
       S.player.setTint(0xff6060);
       S.time.delayedCall(90, () => S.player.clearTint());
       if (S.playerHp <= 0) S.endGame(false, 'Você foi devorado pela horda.');
-    } else {
-      S.baseHp -= z.dmg;
-      S.sound.play('bite', { volume: 0.4 });
-      if (S.baseHp <= 0) S.endGame(false, 'O bastião foi destruído.');
     }
+  }
+
+  // golpe visível na base: dano, flash vermelho nas muralhas e número flutuante
+  hitBase(z) {
+    const S = this;
+    if (S.gameOver) return;
+    S.baseHp -= z.dmg;
+    S.sound.play('bite', { volume: 0.45 });
+    // investida do zumbi
+    S.tweens.add({ targets: z, x: z.x + (CX - z.x) * 0.15, y: z.y + (CY - z.y) * 0.15, duration: 110, yoyo: true });
+    // flash nas peças da base
+    S.baseParts.forEach(p => p.setTint(0xff7060));
+    S.time.delayedCall(110, () => S.baseParts.forEach(p => p.clearTint()));
+    const f = S.add.text(z.x + (CX - z.x) * 0.4, z.y + (CY - z.y) * 0.4, '-' + z.dmg,
+      { fontFamily: 'Kenney Mono, monospace', fontSize: 16, color: '#ff7060' }).setOrigin(0.5).setDepth(60);
+    S.tweens.add({ targets: f, y: f.y - 30, alpha: 0, duration: 700, onComplete: () => f.destroy() });
+    if (S.baseHp <= 0) S.endGame(false, 'O bastião foi destruído.');
   }
 
   // ---------------- economia ----------------
@@ -499,14 +518,16 @@ class GameScene extends Phaser.Scene {
     c.destroy();
     this.coins++; this.totalCoins++;
     this.sound.play('coin', { volume: 0.35 });
-    this.checkTowerUpgrade();
+    const f = this.add.text(this.player.x, this.player.y - 30, '+1',
+      { fontFamily: 'Kenney Mono, monospace', fontSize: 15, color: '#ffd23e' }).setOrigin(0.5).setDepth(60);
+    this.tweens.add({ targets: f, y: f.y - 26, alpha: 0, duration: 550, onComplete: () => f.destroy() });
   }
 
   checkTowerUpgrade() {
     const S = this;
     let upgraded = null;
-    // pode subir mais de um nível de uma vez se as moedas bastarem
-    while (TOWER_LEVELS[S.towerLevel + 1] && S.totalCoins >= TOWER_LEVELS[S.towerLevel + 1].cost) {
+    // pode subir mais de um nível de uma vez se o depósito bastar
+    while (TOWER_LEVELS[S.towerLevel + 1] && S.deposited >= TOWER_LEVELS[S.towerLevel + 1].cost) {
       S.towerLevel++;
       upgraded = TOWER_LEVELS[S.towerLevel];
       S.baseMaxHp = upgraded.baseHp;
@@ -586,33 +607,60 @@ class GameScene extends Phaser.Scene {
       S.player.setRotation(Math.atan2(vy, vx));
     }
 
-    // --- torre automática ---
+    // --- depósito de moedas no quadrado ---
+    S.depositCd -= dt;
+    const onPad = Phaser.Math.Distance.Between(S.player.x, S.player.y, S.pad.x, S.pad.y) < 58;
+    if (onPad && S.coins > 0 && S.depositCd <= 0) {
+      S.depositCd = 200;  // cooldown de sucção
+      const n = Math.min(S.coins, 2);
+      S.coins -= n;
+      S.deposited += n;
+      S.sound.play('coin', { volume: 0.25 });
+      // moedinha voa do jogador para a torre
+      const fly = S.add.image(S.player.x, S.player.y, 'coin').setScale(0.4).setDepth(60);
+      S.tweens.add({ targets: fly, x: CX, y: CY, scale: 0.2, duration: 260, onComplete: () => fly.destroy() });
+      S.checkTowerUpgrade();
+    }
+
+    // --- torre automática: o canhão gira sempre rumo ao alvo ---
     const td = TOWER_LEVELS[S.towerLevel];
     if (td.rate > 0) {
-      S.towerTimer -= dt;
-      if (S.towerTimer <= 0) {
-        const t = S.nearestZombie(CX, CY, td.range);
-        if (t) {
-          S.towerTimer = td.rate;
-          if (S.towerLevel >= 4) S.fireMissile(t, td.dmg);
-          else {
-            S.fireBullet(CX, CY - 10, t, td.dmg, true, 480);
-            if (S.towerLevel >= 2) S.time.delayedCall(110, () => { if (t.active) S.fireBullet(CX, CY - 10, t, td.dmg, true, 480); });
-          }
-          if (S.towerGun) S.towerGun.setRotation(Phaser.Math.Angle.Between(CX, CY, t.x, t.y) + Math.PI / 2);
-          S.sound.play('tower', { volume: 0.25 });
-        }
+      S.towerScanCd = (S.towerScanCd || 0) - dt;
+      if (S.towerScanCd <= 0 || (S.towerTarget && !S.towerTarget.active)) {
+        S.towerScanCd = 150;
+        S.towerTarget = S.nearestZombie(CX, CY, td.range);
       }
-      // torretas laterais
+      if (S.towerGun && S.towerTarget && S.towerTarget.active) {
+        // rotação suave e contínua do canhão
+        const want = Phaser.Math.Angle.Between(CX, CY, S.towerTarget.x, S.towerTarget.y) + Math.PI / 2;
+        S.towerGun.setRotation(Phaser.Math.Angle.RotateTo(S.towerGun.rotation, want, 0.009 * dt));
+      }
+      S.towerTimer -= dt;
+      if (S.towerTimer <= 0 && S.towerTarget && S.towerTarget.active) {
+        const t = S.towerTarget;
+        S.towerTimer = td.rate;
+        if (S.towerLevel >= 4) S.fireMissile(t, td.dmg);
+        else {
+          S.fireBullet(CX, CY - 10, t, td.dmg, true, 480);
+          if (S.towerLevel >= 2) S.time.delayedCall(110, () => { if (t.active) S.fireBullet(CX, CY - 10, t, td.dmg, true, 480); });
+        }
+        S.sound.play('tower', { volume: 0.25 });
+      }
+      // torretas laterais giram e atiram de forma independente
       if (S.sideTurrets && S.sideTurrets.length && S.towerLevel >= 3) {
-        S.sideTurrets.forEach((gun, i) => {
+        S.sideTurrets.forEach(gun => {
           gun.cd = (gun.cd || 0) - dt;
-          if (gun.cd <= 0) {
-            const t = S.nearestZombie(gun.x, gun.y, 300);
-            if (t) {
+          gun.scanCd = (gun.scanCd || 0) - dt;
+          if (gun.scanCd <= 0 || (gun.target && !gun.target.active)) {
+            gun.scanCd = 180;
+            gun.target = S.nearestZombie(gun.x, gun.y, 320);
+          }
+          if (gun.target && gun.target.active) {
+            const want = Phaser.Math.Angle.Between(gun.x, gun.y, gun.target.x, gun.target.y) + Math.PI / 2;
+            gun.setRotation(Phaser.Math.Angle.RotateTo(gun.rotation, want, 0.012 * dt));
+            if (gun.cd <= 0) {
               gun.cd = 850;
-              gun.setRotation(Phaser.Math.Angle.Between(gun.x, gun.y, t.x, t.y) + Math.PI / 2);
-              S.fireBullet(gun.x, gun.y, t, 12, true, 460);
+              S.fireBullet(gun.x, gun.y, gun.target, 12, true, 460);
             }
           }
         });
@@ -628,12 +676,30 @@ class GameScene extends Phaser.Scene {
         z.retarget = 400;
         const dp = Phaser.Math.Distance.Between(z.x, z.y, S.player.x, S.player.y);
         const db = Phaser.Math.Distance.Between(z.x, z.y, CX, CY);
-        z.targetObj = (z.isBoss || db < dp * 1.15) ? { x: CX, y: CY } : S.player;
+        z.targetObj = (z.isBoss || db < dp * 1.15) ? { x: CX, y: CY, isBase: true } : S.player;
       }
-      const t = z.targetObj || { x: CX, y: CY };
+      const t = z.targetObj || { x: CX, y: CY, isBase: true };
+      const distBase = Phaser.Math.Distance.Between(z.x, z.y, CX, CY);
       const ang = Phaser.Math.Angle.Between(z.x, z.y, t.x, t.y);
-      S.physics.velocityFromRotation(ang, z.spd, z.body.velocity);
-      z.setRotation(ang);
+
+      if (t.isBase && distBase < 140) {
+        // chegou à muralha: para e ataca a base em golpes visíveis
+        z.body.setVelocity(0, 0);
+        z.setRotation(Phaser.Math.Angle.Between(z.x, z.y, CX, CY));
+        if (z.attackCd <= 0) {
+          z.attackCd = 900;
+          S.hitBase(z);
+        }
+      } else {
+        S.physics.velocityFromRotation(ang, z.spd, z.body.velocity);
+        z.setRotation(ang);
+      }
+      // nunca andar por cima da torre
+      if (distBase < 95) {
+        const out = Phaser.Math.Angle.Between(CX, CY, z.x, z.y);
+        z.x = CX + Math.cos(out) * 95;
+        z.y = CY + Math.sin(out) * 95;
+      }
       // barra de vida do gigante
       if (z.isBoss) {
         if (!z.hpBar) z.hpBar = S.add.graphics().setDepth(50);

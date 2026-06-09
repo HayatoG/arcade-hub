@@ -14,8 +14,10 @@ assets [Kenney](https://kenney.nl) (CC0).
 ## ÚLTIMO BASTIÃO — sobreviva à horda
 
 Vampire-survivors-like com defesa de base: o tiro é automático, zumbis vêm em
-12 ondas e cada moeda coletada **constrói a torre central sozinha** — de ruína
-a Bastião Supremo com canhões, muralhas, torretas e mísseis em área.
+12 ondas e as moedas coletadas são **depositadas no quadrado ao pé da torre**
+(fique sobre ele — a sucção tem cooldown). Com o depósito, a torre cresce
+sozinha: de ruína a Bastião Supremo com canhões giratórios, muralhas, torretas
+e mísseis em área.
 
 - **5 níveis de torre automáticos** (60/180/360/600 moedas): Sentinela → Canhão
   Duplo → Fortaleza (com torretas laterais) → Bastião Supremo (mísseis em área)
