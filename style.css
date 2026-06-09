@@ -1,0 +1,171 @@
+@font-face {
+  font-family: 'Kenney Future';
+  src: url('assets/fonts/Kenney Future Square.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Kenney Mono';
+  src: url('assets/fonts/Kenney Mini Square Mono.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Kenney Pixel';
+  src: url('assets/fonts/Kenney Pixel.ttf') format('truetype');
+}
+
+:root {
+  --void: #0a0714;
+  --panel: #161028;
+  --neon-purple: #8a5cff;
+  --neon-yellow: #ffd23e;
+  --neon-teal: #46e6c8;
+  --neon-pink: #ff3d68;
+  --text: #e8e4ff;
+  --dim: #8c84b8;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { height: 100%; }
+body {
+  min-height: 100%;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(138,92,255,.22), transparent),
+    radial-gradient(ellipse 70% 45% at 85% 105%, rgba(255,61,104,.14), transparent),
+    var(--void);
+  color: var(--text);
+  font-family: 'Kenney Mono', monospace;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 48px 20px 32px;
+  overflow-x: hidden;
+}
+
+/* estrelas em CSS puro */
+.stars {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 22%, #fff, transparent),
+    radial-gradient(1px 1px at 34% 64%, #cdbfff, transparent),
+    radial-gradient(2px 2px at 56% 12%, #fff, transparent),
+    radial-gradient(1px 1px at 71% 41%, #9ce0ff, transparent),
+    radial-gradient(1.5px 1.5px at 88% 74%, #fff, transparent),
+    radial-gradient(1px 1px at 8% 81%, #ffd9b0, transparent),
+    radial-gradient(1.5px 1.5px at 44% 89%, #cdbfff, transparent),
+    radial-gradient(1px 1px at 63% 56%, #fff, transparent),
+    radial-gradient(2px 2px at 93% 28%, #9ce0ff, transparent),
+    radial-gradient(1px 1px at 25% 44%, #fff, transparent);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+@keyframes twinkle { from { opacity: .55; } to { opacity: 1; } }
+
+header { text-align: center; z-index: 1; }
+
+.coin {
+  font-size: 13px; letter-spacing: .5em; color: var(--neon-yellow);
+  animation: blink 1.4s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: .25; } }
+
+.marquee {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(44px, 9vw, 96px);
+  line-height: 1;
+  margin: 18px 0 10px;
+  color: var(--text);
+  text-shadow:
+    0 0 14px rgba(138,92,255,.9),
+    0 0 48px rgba(138,92,255,.5),
+    4px 4px 0 #2a1a55;
+}
+.marquee em {
+  font-style: normal; display: block;
+  color: var(--neon-yellow);
+  text-shadow:
+    0 0 14px rgba(255,210,62,.8),
+    0 0 48px rgba(255,210,62,.4),
+    4px 4px 0 #6b4a00;
+}
+
+.sub { color: var(--dim); letter-spacing: .25em; font-size: clamp(11px, 1.8vw, 14px); }
+
+/* ---------- gabinetes ---------- */
+.cabinets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 420px));
+  gap: 34px;
+  justify-content: center;
+  margin: 52px 0;
+  z-index: 1;
+  width: 100%;
+  max-width: 960px;
+}
+
+.cab {
+  display: flex; flex-direction: column;
+  background: var(--panel);
+  border: 2px solid rgba(138,92,255,.35);
+  text-decoration: none; color: inherit;
+  transform: rotate(-1deg);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.cab:nth-child(2) { transform: rotate(1.2deg); }
+.cab:hover {
+  transform: rotate(0) translateY(-8px) scale(1.02);
+  border-color: var(--neon-yellow);
+  box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(138,92,255,.35);
+}
+.cab-turbo:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(70,230,200,.3); border-color: var(--neon-teal); }
+
+.cab-screen {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000;
+  border-bottom: 2px solid rgba(138,92,255,.35);
+}
+.cab-screen img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: saturate(1.15) contrast(1.05);
+  transition: transform .3s ease;
+}
+.cab:hover .cab-screen img { transform: scale(1.06); }
+.scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+
+.cab-info { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 9px; }
+
+.badge {
+  align-self: flex-start;
+  font-size: 11px; letter-spacing: .2em;
+  padding: 4px 10px;
+}
+.badge-2d { background: rgba(138,92,255,.18); color: var(--neon-purple); border: 1px solid var(--neon-purple); }
+.badge-3d { background: rgba(70,230,200,.14); color: var(--neon-teal); border: 1px solid var(--neon-teal); }
+
+.cab h2 {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(24px, 3.4vw, 32px);
+}
+.cab-nova h2 { color: var(--neon-yellow); text-shadow: 0 0 16px rgba(255,210,62,.45); }
+.cab-turbo h2 { color: var(--neon-teal); text-shadow: 0 0 16px rgba(70,230,200,.45); }
+
+.cab p { font-size: 14px; line-height: 1.55; color: var(--dim); }
+
+.rec { font-size: 12px; color: var(--neon-pink); letter-spacing: .1em; }
+
+.play {
+  margin-top: 6px;
+  font-family: 'Kenney Future', sans-serif;
+  font-size: 18px; color: var(--text);
+}
+.cab:hover .play { animation: blink 0.8s steps(2) infinite; }
+
+footer { z-index: 1; color: #5c5478; font-size: 12px; text-align: center; }
+footer a { color: var(--neon-purple); text-decoration: none; }
+
+/* ---------- CRT global ---------- */
+.crt {
+  position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, transparent 1px 4px);
+}

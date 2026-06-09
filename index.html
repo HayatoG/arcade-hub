@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KEPLER ARCADE — fliperama virtual</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+
+  <header>
+    <p class="coin">CRÉDITO 1 — APERTE START</p>
+    <h1 class="marquee">KEPLER<em>ARCADE</em></h1>
+    <p class="sub">dois jogos · uma galáxia · zero moedas</p>
+  </header>
+
+  <main class="cabinets">
+    <!-- NOVA STRIKE -->
+    <a class="cab cab-nova" id="link-nova" href="../nova-strike/">
+      <div class="cab-screen">
+        <img src="assets/shots/nova-strike.png" alt="NOVA STRIKE — gameplay" loading="lazy">
+        <div class="scan"></div>
+      </div>
+      <div class="cab-info">
+        <span class="badge badge-2d">2D · SHMUP</span>
+        <h2>NOVA STRIKE</h2>
+        <p>Pilote o último caça da base Aurora através de cinco setores e destrua a nave-mãe HEGEMONIA.</p>
+        <span class="rec" data-key="novastrike_hiscore"></span>
+        <span class="play">▶ JOGAR</span>
+      </div>
+    </a>
+
+    <!-- TURBO RUSH -->
+    <a class="cab cab-turbo" href="turbo-rush/">
+      <div class="cab-screen">
+        <img src="assets/shots/turbo-rush.png" alt="TURBO RUSH — gameplay" loading="lazy">
+        <div class="scan"></div>
+      </div>
+      <div class="cab-info">
+        <span class="badge badge-3d">3D · RACER</span>
+        <h2>TURBO RUSH</h2>
+        <p>Rodovia infinita sob um pôr do sol eterno. Desvie do tráfego, esmague tudo no turbo, bata o recorde.</p>
+        <span class="rec" data-key="turborush_hiscore"></span>
+        <span class="play">▶ JOGAR</span>
+      </div>
+    </a>
+  </main>
+
+  <footer>
+    <p>arte &amp; áudio: <a href="https://kenney.nl" target="_blank" rel="noopener">kenney.nl</a> (CC0) · feito com canvas 2D e three.js</p>
+  </footer>
+
+  <div class="crt" aria-hidden="true"></div>
+
+  <script>
+    // em produção (GitHub Pages) o NOVA STRIKE mora em outro repositório
+    if (location.hostname.endsWith('github.io')) {
+      document.getElementById('link-nova').href = 'https://hayatog.github.io/nova-strike/';
+    }
+    // recordes salvos no navegador (mesma origem = compartilhado entre os jogos)
+    document.querySelectorAll('.rec').forEach(el => {
+      try {
+        const v = parseInt(localStorage.getItem(el.dataset.key) || '0', 10);
+        el.textContent = v > 0 ? 'SEU RECORDE: ' + v.toLocaleString('pt-BR') : 'NENHUM RECORDE AINDA';
+      } catch (e) { el.textContent = ''; }
+    });
+  </script>
+</body>
+</html>

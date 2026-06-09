@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TURBO RUSH — Rodovia Infinita</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div id="score" class="hud-big">0 m</div>
+      <div id="hiscore" class="hud-small">RECORDE 0 m</div>
+    </div>
+    <div class="hud-right">
+      <div id="speed" class="hud-big">0 km/h</div>
+      <div id="turbo-label" class="hud-small turbo-off">TURBO</div>
+    </div>
+  </div>
+  <div id="toast"></div>
+
+  <!-- Tela inicial -->
+  <div id="start" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>TURBO<span>RUSH</span></h1>
+    <p class="tagline">rodovia infinita · pôr do sol eterno</p>
+
+    <div class="cars" id="car-select">
+      <button class="car-card selected" data-car="race">
+        <span class="car-name">VELOZ GT</span>
+        <span class="car-tag">fórmula clássica</span>
+      </button>
+      <button class="car-card" data-car="race-future">
+        <span class="car-name">FUTURO-X</span>
+        <span class="car-tag">protótipo 2090</span>
+      </button>
+      <button class="car-card" data-car="sedan-sports">
+        <span class="car-name">CLÁSSICO S</span>
+        <span class="car-tag">muscle de rua</span>
+      </button>
+    </div>
+
+    <button id="btn-start" class="big-btn">ACELERAR ⏎</button>
+    <p class="help">◄ ► trocar de faixa · ▲ acelerar · ▼ frear · caixas = TURBO · cones = pontos</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · arte: kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Game over -->
+  <div id="gameover" class="overlay hidden">
+    <h2>BATIDA!</h2>
+    <div id="go-stats"></div>
+    <button id="btn-retry" class="big-btn">CORRER DE NOVO ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div class="crt"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>
