@@ -546,18 +546,29 @@ function flashChar(ch, color) {
   }, 80);
 }
 
-// prende a arma na mão direita — os nós do braço seguem as animações
+// prende a arma na mão direita — os nós do braço seguem as animações.
+// braço do boneco estende-se pelo −X local (mão em x≈−0,28);
+// armas do Weapon Pack têm o cano no −Z.
 function equipWeapon(model) {
   const arm = player.ch.obj.getObjectByName('arm-right');
   if (!arm) return;
   if (player.weaponMesh && player.weaponMesh.parent) player.weaponMesh.parent.remove(player.weaponMesh);
-  const H = LIB['character-keeper'].size.y;        // altura nativa do boneco
-  const w = makeProp(model, 1);
-  const maxDim = Math.max(LIB[model].size.x, LIB[model].size.y, LIB[model].size.z);
-  w.scale.setScalar((H * 0.55) / maxDim);          // arma parruda, leitura arcade
-  w.position.set(0, -H * 0.24, H * 0.07);          // na altura da mão
-  arm.add(w);
-  player.weaponMesh = w;
+  const inner = LIB[model].scene.clone(true);
+  const box = new THREE.Box3().setFromObject(inner);
+  const len = box.max.z - box.min.z;
+  // coloca a empunhadura (traseira do cano) na origem do grupo
+  inner.position.set(
+    -(box.min.x + box.max.x) / 2,
+    -(box.min.y + box.max.y) / 2,
+    -box.max.z + len * 0.14
+  );
+  const grip = new THREE.Group();
+  grip.add(inner);
+  grip.rotation.y = Math.PI / 2;        // cano alinhado ao eixo do braço (−X)
+  grip.scale.setScalar(0.30 / len);     // ~1/3 da altura do boneco
+  grip.position.set(-0.29, 0, 0);       // na mão (ponta do braço)
+  arm.add(grip);
+  player.weaponMesh = grip;
 }
 
 function checkWeaponUpgrade() {
