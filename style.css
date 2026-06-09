@@ -142,6 +142,7 @@ header { text-align: center; z-index: 1; }
 }
 .badge-2d { background: rgba(138,92,255,.18); color: var(--neon-purple); border: 1px solid var(--neon-purple); }
 .badge-3d { background: rgba(70,230,200,.14); color: var(--neon-teal); border: 1px solid var(--neon-teal); }
+.badge-srv { background: rgba(110,220,90,.14); color: #6edc5a; border: 1px solid #6edc5a; }
 
 .cab h2 {
   font-family: 'Kenney Future', sans-serif;
@@ -149,6 +150,9 @@ header { text-align: center; z-index: 1; }
 }
 .cab-nova h2 { color: var(--neon-yellow); text-shadow: 0 0 16px rgba(255,210,62,.45); }
 .cab-turbo h2 { color: var(--neon-teal); text-shadow: 0 0 16px rgba(70,230,200,.45); }
+.cab-bastiao h2 { color: #6edc5a; text-shadow: 0 0 16px rgba(110,220,90,.45); }
+.cab-bastiao:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(110,220,90,.3); border-color: #6edc5a; }
+.cab:nth-child(3) { transform: rotate(-0.8deg); }
 
 .cab p { font-size: 14px; line-height: 1.55; color: var(--dim); }
 

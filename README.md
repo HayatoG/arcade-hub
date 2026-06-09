@@ -1,6 +1,6 @@
 # KEPLER ARCADE 🕹️
 
-Fliperama virtual com dois jogos completos, feitos só com tecnologias web e
+Fliperama virtual com três jogos completos, feitos só com tecnologias web e
 assets [Kenney](https://kenney.nl) (CC0).
 
 **Jogar online:** https://hayatog.github.io/arcade-hub/
@@ -9,6 +9,20 @@ assets [Kenney](https://kenney.nl) (CC0).
 |---|---|---|
 | [NOVA STRIKE](https://github.com/HayatoG/nova-strike) | Shoot 'em up vertical 2D | Canvas 2D puro |
 | TURBO RUSH (`turbo-rush/`) | Racer infinito 3D | Three.js + glTF |
+| ÚLTIMO BASTIÃO (`ultimo-bastiao/`) | Survivors + tower defense | Phaser |
+
+## ÚLTIMO BASTIÃO — sobreviva à horda
+
+Vampire-survivors-like com defesa de base: o tiro é automático, zumbis vêm em
+12 ondas e cada moeda coletada **constrói a torre central sozinha** — de ruína
+a Bastião Supremo com canhões, muralhas, torretas e mísseis em área.
+
+- **5 níveis de torre automáticos** (60/180/360/600 moedas): Sentinela → Canhão
+  Duplo → Fortaleza (com torretas laterais) → Bastião Supremo (mísseis em área)
+- **5 armas automáticas por abates** (pistola → tempestade de balas)
+- 3 tipos de zumbi (errante, corredor, brutamontes) + **gigantes** nas ondas 6 e 12
+- Moedas com ímã, sangue no chão, recorde de ondas no navegador
+- Teclado (WASD/setas) ou toque (arrastar o dedo) — o tiro mira sozinho
 
 ## TURBO RUSH — Rodovia Infinita
 

@@ -16,7 +16,7 @@
   <header>
     <p class="coin">CRÉDITO 1 — APERTE START</p>
     <h1 class="marquee">KEPLER<em>ARCADE</em></h1>
-    <p class="sub">dois jogos · uma galáxia · zero moedas</p>
+    <p class="sub">três jogos · uma galáxia · zero moedas</p>
   </header>
 
   <main class="cabinets">
@@ -49,6 +49,21 @@
         <span class="play">▶ JOGAR</span>
       </div>
     </a>
+
+    <!-- ÚLTIMO BASTIÃO -->
+    <a class="cab cab-bastiao" href="ultimo-bastiao/">
+      <div class="cab-screen">
+        <img src="assets/shots/ultimo-bastiao.png" alt="ÚLTIMO BASTIÃO — gameplay" loading="lazy">
+        <div class="scan"></div>
+      </div>
+      <div class="cab-info">
+        <span class="badge badge-srv">2D · SURVIVAL</span>
+        <h2>ÚLTIMO BASTIÃO</h2>
+        <p>Zumbis em 12 ondas, tiro automático e uma torre que evolui sozinha com cada moeda coletada. Resista.</p>
+        <span class="rec" data-key="bastiao_record" data-suffix=" ondas"></span>
+        <span class="play">▶ JOGAR</span>
+      </div>
+    </a>
   </main>
 
   <footer>
@@ -74,7 +89,7 @@
     document.querySelectorAll('.rec').forEach(el => {
       try {
         const v = parseInt(localStorage.getItem(el.dataset.key) || '0', 10);
-        el.textContent = v > 0 ? 'SEU RECORDE: ' + v.toLocaleString('pt-BR') : 'NENHUM RECORDE AINDA';
+        el.textContent = v > 0 ? 'SEU RECORDE: ' + v.toLocaleString('pt-BR') + (el.dataset.suffix || '') : 'NENHUM RECORDE AINDA';
       } catch (e) { el.textContent = ''; }
     });
   </script>

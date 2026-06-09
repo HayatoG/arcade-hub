@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ÚLTIMO BASTIÃO — sobreviva à horda</title>
+  <script>
+    // cache-busting: CSS/JS sempre frescos a cada visita
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <div id="game-root"></div>
+  <div class="crt"></div>
+  <script>
+    document.write('<script src="lib/phaser-arcade-physics.min.js"><\/script>');
+    document.write('<script src="js/game.js?v=' + __V + '"><\/script>');
+  </script>
+</body>
+</html>
