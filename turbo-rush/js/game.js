@@ -140,13 +140,14 @@ function recenter(wrapper, inst) {
 }
 
 // instância com o eixo maior alinhado ao Z e comprimento normalizado
-function makeInstance(name, targetLen) {
+// yaw extra: carros do Car Kit apontam para +Z, mas a pista corre para -Z
+function makeInstance(name, targetLen, yaw = 0) {
   const { obj, size } = LIB[name];
   const wrapper = new THREE.Group();
   const inst = obj.clone(true);
   const s = targetLen / Math.max(size.x, size.z);
   inst.scale.setScalar(s);
-  if (size.x > size.z) inst.rotation.y = Math.PI / 2;
+  inst.rotation.y = (size.x > size.z ? Math.PI / 2 : 0) + yaw;
   wrapper.add(inst);
   return recenter(wrapper, inst);
 }
@@ -234,7 +235,7 @@ function placeProp(p, z) {
 
 function setPlayerCar(name) {
   if (playerGroup) scene.remove(playerGroup);
-  playerGroup = makeInstance(name, 4.3);
+  playerGroup = makeInstance(name, 4.3, Math.PI);
   playerGroup.position.set(laneX(playerLane), 0, 0);
   scene.add(playerGroup);
 }
@@ -251,7 +252,7 @@ function spawnTraffic() {
     usedLanes.add(lane);
     const name = TRAFFIC_MODELS[randi(0, TRAFFIC_MODELS.length - 1)];
     const len = ['truck', 'van', 'ambulance', 'delivery'].includes(name) ? 5.4 : 4.3;
-    const car = makeInstance(name, len);
+    const car = makeInstance(name, len, Math.PI);
     car.position.set(laneX(lane) + rand(-0.2, 0.2), 0, SPAWN_Z);
     car.userData.kmh = rand(45, 80);
     car.userData.lane = lane;
