@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TURBO RUSH — Rodovia Infinita</title>
-  <link rel="stylesheet" href="style.css">
+  <script>
+    // cache-busting: CSS sempre fresco (o JS é tratado no fim do body)
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -58,10 +63,11 @@
 
   <div class="crt"></div>
 
-  <script src="js/audio.js"></script>
-  <script type="importmap">
-    { "imports": { "three": "./lib/three.module.min.js" } }
+  <script>
+    // carrega todo o código do jogo com versão única por visita
+    document.write('<script src="js/audio.js?v=' + __V + '"><\/script>');
+    document.write('<script type="importmap">{"imports":{"three":"./lib/three.module.min.js?v=' + __V + '"}}<\/script>');
+    document.write('<script type="module" src="js/game.js?v=' + __V + '"><\/script>');
   </script>
-  <script type="module" src="js/game.js"></script>
 </body>
 </html>

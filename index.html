@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KEPLER ARCADE — fliperama virtual</title>
-  <link rel="stylesheet" href="style.css">
+  <script>
+    // carrega o CSS com versão única por visita (evita estilos em cache)
+    document.write('<link rel="stylesheet" href="style.css?v=' + Date.now() + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
 </head>
 <body>
   <div class="stars" aria-hidden="true"></div>
@@ -58,6 +62,14 @@
     if (location.hostname.endsWith('github.io')) {
       document.getElementById('link-nova').href = 'https://hayatog.github.io/nova-strike/';
     }
+    // cache-busting: cada visita gera links únicos, forçando HTML fresco dos jogos
+    document.querySelectorAll('.cab').forEach(a => {
+      a.addEventListener('click', () => {
+        const url = new URL(a.href, location.href);
+        url.searchParams.set('t', Date.now());
+        a.href = url.toString();
+      });
+    });
     // recordes salvos no navegador (mesma origem = compartilhado entre os jogos)
     document.querySelectorAll('.rec').forEach(el => {
       try {
