@@ -23,11 +23,11 @@ const TOWER_LEVELS = [
 ];
 
 const WEAPON_LEVELS = [
-  { kills: 0,   name: 'FERRÃO',     rate: 380, dmg: 12, shots: 1 },
-  { kills: 35,  name: 'FERRÃO DUPLO', rate: 290, dmg: 14, shots: 1 },
-  { kills: 90,  name: 'CHAMA ARCANA', rate: 200, dmg: 17, shots: 1 },
-  { kills: 180, name: 'FÚRIA GÊMEA',  rate: 170, dmg: 19, shots: 2 },
-  { kills: 320, name: 'TEMPESTADE',   rate: 120, dmg: 22, shots: 3 },
+  { kills: 0,   name: 'PISTOLA',      rate: 380, dmg: 12, shots: 1, model: 'pistol' },
+  { kills: 35,  name: 'SILENCIADA',   rate: 290, dmg: 14, shots: 1, model: 'pistolSilencer' },
+  { kills: 90,  name: 'ESPINGARDA',   rate: 200, dmg: 17, shots: 1, model: 'shotgunShort' },
+  { kills: 180, name: 'UZI',          rate: 170, dmg: 19, shots: 2, model: 'uzi' },
+  { kills: 320, name: 'METRALHADORA', rate: 120, dmg: 22, shots: 3, model: 'machinegun' },
 ];
 
 const LAST_WAVE = 12;
@@ -113,6 +113,7 @@ const MODELS = [
   'tower-round-roof-a', 'tower-round-build-c',
   'weapon-ballista', 'weapon-cannon', 'weapon-catapult',
   'weapon-ammo-arrow', 'weapon-ammo-cannonball', 'weapon-ammo-boulder', 'wood-structure',
+  'pistol', 'pistolSilencer', 'shotgunShort', 'uzi', 'machinegun',
 ];
 const LIB = {};
 const loader = new GLTFLoader();
@@ -398,6 +399,7 @@ function startGame() {
   mixers.push(ch.mixer);
   ch.play('idle');
   player = { ch, pos: ch.obj.position };
+  equipWeapon(WEAPON_LEVELS[0].model);
 
   buildTower();
   state = ST.PLAYING;
@@ -544,10 +546,25 @@ function flashChar(ch, color) {
   }, 80);
 }
 
+// prende a arma na mão direita — os nós do braço seguem as animações
+function equipWeapon(model) {
+  const arm = player.ch.obj.getObjectByName('arm-right');
+  if (!arm) return;
+  if (player.weaponMesh && player.weaponMesh.parent) player.weaponMesh.parent.remove(player.weaponMesh);
+  const H = LIB['character-keeper'].size.y;        // altura nativa do boneco
+  const w = makeProp(model, 1);
+  const maxDim = Math.max(LIB[model].size.x, LIB[model].size.y, LIB[model].size.z);
+  w.scale.setScalar((H * 0.55) / maxDim);          // arma parruda, leitura arcade
+  w.position.set(0, -H * 0.24, H * 0.07);          // na altura da mão
+  arm.add(w);
+  player.weaponMesh = w;
+}
+
 function checkWeaponUpgrade() {
   const next = WEAPON_LEVELS[G.weaponLevel + 1];
   if (!next || G.kills < next.kills) return;
   G.weaponLevel++;
+  equipWeapon(next.model);
   AudioSys.play('upgrade', 0.8);
   announce('ARMA NOVA!\n' + next.name);
 }
@@ -639,9 +656,10 @@ function updateGame(dt) {
     const d = Math.hypot(dx, dy);
     if (d > 14) { vx = dx / d; vz = dy / d; }
   }
-  // converte direção de tela para o plano isométrico (câmera a 45°)
+  // converte direção de tela para o plano isométrico (câmera a 45°):
+  // direita na tela = mundo (+x,−z); baixo na tela = mundo (+x,+z)
   const iso = Math.SQRT1_2;
-  const wx = (vx - vz) * iso, wz = (vx + vz) * iso;
+  const wx = (vx + vz) * iso, wz = (vz - vx) * iso;
   const moving = !!(vx || vz);
   const SPD = 5.2;
   if (moving) {
@@ -919,4 +937,5 @@ window.__B3 = {
   get over() { return G ? !!G.over : false; },
   addCoins: n => { if (G) G.coins += n; },
   setPos: (x, z) => { if (player) { player.pos.x = x; player.pos.z = z; } },
+  get pos() { return player ? { x: +player.pos.x.toFixed(2), z: +player.pos.z.toFixed(2) } : null; },
 };
