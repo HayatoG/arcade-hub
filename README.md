@@ -5,6 +5,8 @@ assets [Kenney](https://kenney.nl) (CC0).
 
 **Jogar online:** https://hayatog.github.io/arcade-hub/
 
+📦 **[Catálogo completo de assets](ASSETS.md)** — tudo o que temos (4.885 modelos 3D, 37 mil sprites, 1.286 sons) e ideias do que dá para construir.
+
 | Jogo | Estilo | Tech |
 |---|---|---|
 | [NOVA STRIKE](https://github.com/HayatoG/nova-strike) | Shoot 'em up vertical 2D | Canvas 2D puro |
