@@ -64,6 +64,20 @@ function meleeGrip(model) {
   return grip;
 }
 
+// espada guardada nas costas (diagonal sobre o torso, lâmina para cima)
+function backGrip(model) {
+  const inner = ctx.world.LIB[model].scene.clone(true);
+  const box = new THREE.Box3().setFromObject(inner);
+  const h = box.max.y - box.min.y;
+  inner.position.set(-(box.min.x + box.max.x) / 2, -box.min.y - h * 0.12, -(box.min.z + box.max.z) / 2);
+  const grip = new THREE.Group();
+  grip.add(inner);
+  grip.scale.setScalar(0.95 / h);
+  grip.rotation.set(0, 0, 1.2);                 // bem diagonal: cabo no quadril direito, ponta além do ombro esquerdo
+  grip.position.set(0.42, 0.95, -0.52);         // costas, em espaço do ROOT (pés na origem, frente +Z)
+  return grip;
+}
+
 // arma de fogo presa à mão (técnica do Maré Vermelha)
 function gunGrip(model) {
   const inner = ctx.world.LIB[model].scene.clone(true);
@@ -253,7 +267,7 @@ export const H = {
   dashT: 0, dashCd: 0, dashDX: 0, dashDZ: 0, iframes: 0,
   stepT: 0, stepAlt: false, castLock: 0, dead: false,
   aimX: 0, aimZ: 1,
-  swordGrip: null, gunGrip: null, hand: 'sword',
+  swordGrip: null, gunGrip: null, backGrip: null, hand: 'sword',
 };
 let trail = null;
 let muzzle = null, muzzleT = 0;
@@ -263,7 +277,7 @@ function buildHero(skin) {
   H.ch = makeChar('chars/character-' + skin, 1.5);
   H.ch.obj.position.set(H.x, 0, H.z);
   ctx.scene.add(H.ch.obj);
-  H.swordGrip = null; H.gunGrip = null;
+  H.swordGrip = null; H.gunGrip = null; H.backGrip = null;
   ENT.refreshHandWeapon();
   H.ch.play('idle');
   if (!H.light) {
@@ -297,7 +311,7 @@ function buildHero(skin) {
 function setHand(mode) {
   if (H.hand === mode) return;
   H.hand = mode;
-  if (H.swordGrip) H.swordGrip.visible = mode === 'sword';
+  // espada na mão só durante o golpe (ver updateHero); fora dele fica nas costas
   if (H.gunGrip) H.gunGrip.visible = mode === 'gun';
 }
 
@@ -1044,6 +1058,10 @@ function updateHero(dt) {
   H.ch.obj.position.set(H.x, H.lift, H.z);
   H.ch.obj.rotation.y = H.dir;
   H.ch.obj.visible = H.iframes > 0.05 ? (Math.floor(time * 16) % 2 === 0) : true;
+  // espada: na mão durante o golpe, nas costas no resto do tempo
+  const golpeando = H.ch.current === 'attack-melee-right' || H.ch.current === 'attack-melee-left';
+  if (H.swordGrip) H.swordGrip.visible = golpeando;
+  if (H.backGrip) H.backGrip.visible = !golpeando;
   H.light.position.set(H.x, 2.2, H.z + 0.5);
   H.light.intensity = ctx.world.outdoor ? 0 : 6;
 
@@ -1227,17 +1245,21 @@ export const ENT = {
   refreshHandWeapon() {
     if (!H.ch || !RPG.P) return;
     const arm = H.ch.obj.getObjectByName('arm-right');
+    const torso = H.ch.obj.getObjectByName('torso');
     if (!arm) return;
     if (H.swordGrip) arm.remove(H.swordGrip);
     if (H.gunGrip) arm.remove(H.gunGrip);
+    if (H.backGrip && H.backGrip.parent) H.backGrip.parent.remove(H.backGrip);
     const sw = RPG.ITEMS[RPG.P.equip.espada];
-    H.swordGrip = meleeGrip('weapons/' + (sw ? sw.model : 'sword-a'));
+    const swModel = 'weapons/' + (sw ? sw.model : 'sword-a');
+    H.swordGrip = meleeGrip(swModel);
+    H.swordGrip.visible = false;                 // só aparece durante o golpe
     arm.add(H.swordGrip);
+    H.backGrip = backGrip(swModel);              // guardada nas costas (root: eixos previsíveis)
+    H.ch.obj.add(H.backGrip);
     const gun = RPG.P.equip.fogo && RPG.ITEMS[RPG.P.equip.fogo];
     H.gunGrip = gun ? gunGrip('guns/' + gun.model) : null;
-    if (H.gunGrip) arm.add(H.gunGrip);
-    H.swordGrip.visible = H.hand === 'sword' || !H.gunGrip;
-    if (H.gunGrip) H.gunGrip.visible = H.hand === 'gun';
+    if (H.gunGrip) { arm.add(H.gunGrip); H.gunGrip.visible = H.hand === 'gun'; }
   },
 
   update(dt, playing) {
