@@ -1,6 +1,6 @@
 # KEPLER ARCADE 🕹️
 
-Fliperama virtual com nove jogos completos, feitos só com tecnologias web e
+Fliperama virtual com dez jogos completos, feitos só com tecnologias web e
 assets [Kenney](https://kenney.nl) (CC0).
 
 **Jogar online:** https://hayatog.github.io/arcade-hub/
@@ -18,6 +18,18 @@ assets [Kenney](https://kenney.nl) (CC0).
 | PROFUNDEZAS (`profundezas/`) | Roguelite de masmorra sala-a-sala | Three.js + glTF animado |
 | GOLFE MALUCO (`golfe-maluco/`) | Minigolfe físico de 12 buracos | Three.js + glTF |
 | TRAVESSIA (`travessia/`) | Arcade de travessia infinita (estilo Crossy Road) | Three.js + glTF |
+| BALAS & BRUXARIA (`balas-e-bruxaria/`) | RPG isométrico de fantasia (com armas de fogo!) | Three.js + glTF animado |
+
+## BALAS & BRUXARIA — RPG de pólvora e poção
+
+RPG isométrico tranquilo na vila de Pederneira: a Relíquia do Coração foi
+partida em 3 fragmentos por três senhores das trevas — e o ferreiro acabou de
+inventar a pólvora. Crie seu herói (8 visuais, nome, 3 dons), converse com 8
+NPCs, aceite 7 quests, evolua atributos (FOR/MIRA/MAG/VIG), equipe espadas,
+amuletos e **armas de fogo** (a uzi convive com a bola de fogo), aprenda 4
+magias e enfrente 3 masmorras com chefes únicos. Mundo com ciclo dia/noite,
+rio animado, nuvens com sombra e save automático. Suporte a teclado+mouse,
+**controle (Gamepad API)** e **celular (touch com auto-aim)**.
 
 ## CORSÁRIO — a maré fantasma
 

@@ -197,6 +197,7 @@
 | PROFUNDEZAS | Mini Dungeon + personagens do Graveyard | Music Loops (Infinite Descent!), RPG, Impact |
 | GOLFE MALUCO | Minigolf Kit | Music Loops, Jingles, Interface, Impact |
 | TRAVESSIA | Cube Pets, Car Kit, Train Kit, Nature Kit, City Roads, barcos do Pirate | Music Loops (Polka Train!), Interface, Retro, Impact |
+| BALAS & BRUXARIA | Fantasy Town, Nature, Mini Dungeon, Graveyard, Blocky Characters, Medieval Weapons, Weapon Pack, Fantasy UI Borders, Game Icons | Music Loops (6 trilhas), RPG, Impact, Interface, Jingles |
 
 ## 💡 Combinações prontas — o que dá pra fazer em seguida
 

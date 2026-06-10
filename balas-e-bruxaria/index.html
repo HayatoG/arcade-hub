@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>BALAS &amp; BRUXARIA — RPG de pólvora e magia</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div id="hud-status">
+      <div class="bar hp"><div id="hp-fill"></div><span id="hp-num">100</span></div>
+      <div class="bar mp"><div id="mp-fill"></div><span id="mp-num">20</span></div>
+      <div id="hud-line2">
+        <span id="lvl-badge">NV 1</span>
+        <div class="bar xp"><div id="xp-fill"></div></div>
+        <span id="gold-hud">🪙 0</span>
+      </div>
+    </div>
+    <div id="hud-right">
+      <div id="area-name">Vila de Pederneira</div>
+      <div id="quest-track"></div>
+    </div>
+    <div id="potbar">
+      <div class="pot" id="pot-hp"><span class="key">Q</span>🧪<b id="pot-hp-n">0</b></div>
+      <div class="pot" id="pot-mp"><span class="key">R</span>🔮<b id="pot-mp-n">0</b></div>
+    </div>
+    <div id="spellbar"></div>
+  </div>
+
+  <div id="bossbar" class="hidden"><span id="boss-name"></span><div class="bar boss"><div id="boss-fill"></div></div></div>
+  <div id="announce"></div>
+  <div id="toasts"></div>
+  <div id="prompt" class="hidden"></div>
+  <div id="hurt-flash"></div>
+
+  <!-- Diálogo -->
+  <div id="dlg" class="hidden">
+    <div class="panel dlg-panel">
+      <div id="dlg-name"></div>
+      <div id="dlg-text"></div>
+      <div id="dlg-next">▼</div>
+      <div id="dlg-choices"></div>
+    </div>
+  </div>
+
+  <!-- Inventário + atributos -->
+  <div id="inv" class="modal hidden">
+    <div class="panel big-panel">
+      <div class="panel-title">🎒 INVENTÁRIO <span class="panel-close" data-close="inv">✕</span></div>
+      <div id="inv-body">
+        <div id="inv-left">
+          <div id="equip-row"></div>
+          <div id="inv-grid"></div>
+          <div id="inv-actions"></div>
+          <div id="inv-tip"></div>
+        </div>
+        <div id="inv-right">
+          <div id="attr-head">ATRIBUTOS · <span id="attr-pts">0</span> ponto(s)</div>
+          <div id="attr-list"></div>
+          <div id="hero-stats"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diário de missões -->
+  <div id="qlog" class="modal hidden">
+    <div class="panel big-panel">
+      <div class="panel-title">📜 MISSÕES <span class="panel-close" data-close="qlog">✕</span></div>
+      <div id="qlog-list"></div>
+    </div>
+  </div>
+
+  <!-- Loja -->
+  <div id="shop" class="modal hidden">
+    <div class="panel big-panel">
+      <div class="panel-title"><span id="shop-title">LOJA</span> <span id="shop-gold">🪙 0</span> <span class="panel-close" data-close="shop">✕</span></div>
+      <div id="shop-list"></div>
+    </div>
+  </div>
+
+  <!-- Pausa -->
+  <div id="pause" class="modal hidden">
+    <div class="panel big-panel narrow">
+      <div class="panel-title">⏸ PAUSA</div>
+      <button class="big-btn" id="btn-resume">CONTINUAR</button>
+      <button class="big-btn ghost" id="btn-mute">🔊 SOM</button>
+      <button class="big-btn ghost" id="btn-quit">SALVAR E SAIR</button>
+      <p class="help" id="pause-help"></p>
+    </div>
+  </div>
+
+  <!-- Menu título -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>BALAS <span class="amp">&amp;</span><span>BRUXARIA</span></h1>
+    <p class="tagline">espada · magia · e a recém-inventada pólvora</p>
+    <p class="story">A <b>Relíquia do Coração</b> de Pederneira foi partida em três e roubada
+      por três senhores das trevas. Por sorte, o ferreiro <b>Bartolomeu</b> acabou de inventar
+      a <i>"vara de trovão"</i> — e ninguém combina mais magia, espada e pólvora do que você.<br>
+      Recupere os fragmentos. Devolva a paz. E tente não assustar as galinhas.</p>
+    <button id="btn-continue" class="big-btn gold hidden">⟳ CONTINUAR</button>
+    <button id="btn-start" class="big-btn">▶ NOVA AVENTURA ⏎</button>
+    <p class="help">WASD move · mouse mira · clique atira · espaço espada · SHIFT rola · 1-4 magias · E interage · 🎮 e toque também</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · maior nível: <span id="record">—</span> · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Criação de personagem -->
+  <div id="create" class="overlay side hidden">
+    <div class="panel big-panel create-panel">
+      <div class="panel-title">⚒ FORJE SEU HERÓI</div>
+      <div class="cc-row">
+        <button class="arrow-btn" id="skin-prev">◀</button>
+        <span id="skin-name">Visual 1</span>
+        <button class="arrow-btn" id="skin-next">▶</button>
+      </div>
+      <div class="cc-row"><input id="cc-name" maxlength="14" placeholder="Nome do herói" value="Pimenta"></div>
+      <div id="gift-cards">
+        <div class="gift-card sel" data-g="bravo"><b>🛡 Bravo</b><span>+2 FOR — bate como mula</span></div>
+        <div class="gift-card" data-g="aguia"><b>🎯 Olho-de-Águia</b><span>+2 MIRA — pólvora obedece</span></div>
+        <div class="gift-card" data-g="lua"><b>🌙 Tocado-pela-Lua</b><span>+2 MAG — fala com faíscas</span></div>
+      </div>
+      <button class="big-btn gold" id="cc-ok">⚔ COMEÇAR ⏎</button>
+      <p class="help">◀ ▶ trocam o visual · Enter confirma</p>
+    </div>
+  </div>
+
+  <!-- Créditos -->
+  <div id="credits" class="overlay hidden">
+    <div id="credits-roll"></div>
+    <button class="big-btn hidden" id="btn-credits-ok">🎉 VOLTAR À VILA</button>
+  </div>
+
+  <div id="death-msg" class="hidden"></div>
+
+  <!-- Toque -->
+  <div id="touch" class="hidden">
+    <div id="joy"><div id="joy-stick"></div></div>
+    <div id="tcluster">
+      <button class="tbtn" id="t-shoot">🔫</button>
+      <button class="tbtn" id="t-melee">⚔</button>
+      <button class="tbtn" id="t-spell">✨</button>
+      <button class="tbtn" id="t-dash">🌀</button>
+    </div>
+    <button class="tbtn wide hidden" id="t-interact">✋</button>
+    <div id="ttop">
+      <button class="tbtn small" id="t-inv">🎒</button>
+      <button class="tbtn small" id="t-quest">📜</button>
+      <button class="tbtn small" id="t-pause">⏸</button>
+    </div>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">ACENDENDO AS FORJAS DE PEDERNEIRA...</p></div>
+  <div id="fade"></div>
+  <div class="crt"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script>
+    document.write('<script type="module" src="js/game.js?v=' + __V + '"><\/script>');
+  </script>
+</body>
+</html>
