@@ -144,7 +144,7 @@ const HOLES = [
     decor: [['start',0,6,0],['crest',1.2,3,0],['flag-blue',-1.3,1.4,0]] },
 
   { name: 'O PLATÔ', par: 3,
-    t: [['end',0,4,0],['ramp-square',0,3,0],['corner',0,2,2],['ramp-square',1,2,1],
+    t: [['end',0,4,0],['ramp-square',0,3,2],['corner',0,2,2],['ramp-square',1,2,1],
         ['straight',2,2,1],['hole-round',3,2,1]],
     tee: [0, 4.1], cup: [3, 2],
     decor: [['crest',0,1,0],['flag-blue',4.3,1.4,0]] },
@@ -163,10 +163,10 @@ const HOLES = [
     decor: [['crest',1.5,4.4,0],['flag-blue',-1.3,3,0]] },
 
   { name: 'SALTO MORTAL', par: 3,
-    t: [['end',0,6,0],['straight',0,5,0],['straight',0,4,0],['ramp-medium',0,3,2],
-        ['gap',0,2,0],['straight',0,1,0],['hole-round',0,0,2]],
-    tee: [0, 6.1], cup: [0, 0],
-    decor: [['start',0,7,0],['crest',-1.2,2,0],['crest',1.2,2,0],['flag-blue',1.3,3.2,0]] },
+    t: [['end',0,5,0],['ramp-medium',0,4,2],['gap',0,3,0],['straight',0,2,0],
+        ['straight',0,1,0],['hole-round',0,0,2]],
+    tee: [0, 5.1], cup: [0, 0],
+    decor: [['start',0,6,0],['crest',-1.2,3,0],['crest',1.2,3,0],['flag-blue',1.3,4.2,0]] },
 
   { name: 'O MOINHO', par: 3,
     t: [['end',0,5,0],['straight',0,4,0],['straight',0,3,0],['windmill',0,2,2],
