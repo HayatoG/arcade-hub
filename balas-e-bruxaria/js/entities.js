@@ -46,16 +46,20 @@ function makeChar(libKey, height) {
   return api;
 }
 
-// arma branca presa à mão direita (técnica do Profundezas)
+// arma branca presa à mão direita (técnica do Profundezas).
+// Os modelos do Medieval Weapons são enormes (3,8–5,5 un de altura, lâmina em +Y,
+// cabo na base) — a escala precisa ser proporcional, SEM piso de clamp,
+// senão a espada fica maior que o boneco.
 function meleeGrip(model) {
   const inner = ctx.world.LIB[model].scene.clone(true);
   const box = new THREE.Box3().setFromObject(inner);
-  inner.position.set(-(box.min.x + box.max.x) / 2, -box.min.y + 0.02, -(box.min.z + box.max.z) / 2);
+  const h = box.max.y - box.min.y;
+  // mão segura o cabo (um pouco acima do pomo), lâmina ao longo de +Y
+  inner.position.set(-(box.min.x + box.max.x) / 2, -box.min.y - h * 0.08, -(box.min.z + box.max.z) / 2);
   const grip = new THREE.Group();
   grip.add(inner);
-  grip.rotation.z = Math.PI / 2;
-  const h = box.max.y - box.min.y;
-  grip.scale.setScalar(clamp(0.58 / h, 0.45, 1.4));
+  grip.rotation.z = Math.PI / 2;        // lâmina (+Y) aponta para fora do braço (−X)
+  grip.scale.setScalar(0.58 / h);       // comprimento final ~0,58 un (~60% do boneco)
   grip.position.set(-0.26, 0, 0);
   return grip;
 }
@@ -1034,7 +1038,10 @@ function updateHero(dt) {
   }
   const c = ctx.world.collide(nx, nz, 0.45);
   H.x = c.x; H.z = c.z;
-  H.ch.obj.position.set(H.x, 0, H.z);
+  // sobe suavemente no deque da ponte (e desce ao sair)
+  const liftAlvo = ctx.world.liftAt(H.x, H.z);
+  H.lift = (H.lift || 0) + (liftAlvo - (H.lift || 0)) * Math.min(1, 12 * dt);
+  H.ch.obj.position.set(H.x, H.lift, H.z);
   H.ch.obj.rotation.y = H.dir;
   H.ch.obj.visible = H.iframes > 0.05 ? (Math.floor(time * 16) % 2 === 0) : true;
   H.light.position.set(H.x, 2.2, H.z + 0.5);

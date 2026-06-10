@@ -27,6 +27,7 @@ const MODELS = [
   'town/stall', 'town/stall-stool',
   'town/tree', 'town/tree-high', 'town/hedge', 'town/fence', 'town/pillar-stone',
   'town/windmill', 'town/wheel', 'town/rock-small', 'town/chimney',
+  'nature/bridge_side_wood', 'nature/bridge_center_wood',
   // natureza (Nature Kit)
   'nature/tree_default', 'nature/tree_oak', 'nature/tree_pineDefaultA', 'nature/tree_pineRoundB',
   'nature/tree_thin', 'nature/tree_fat', 'nature/rock_largeA', 'nature/rock_largeC', 'nature/rock_tallB',
@@ -139,6 +140,11 @@ export const WORLD = {
   get dayT() { return dayT; },
   get outdoor() { return areas[curArea] && areas[curArea].outdoor; },
   get areas() { return areas; },
+
+  // altura do chão sob o herói (deque da ponte nos campos)
+  liftAt(x, z) {
+    return (curArea === 'campo' && x > 9.7 && x < 18.3 && z > -1 && z < 5) ? 0.3 : 0;
+  },
 
   init(c) { ctx = c; },
 
@@ -680,23 +686,39 @@ function buildCampo() {
   A.rects.push({ x1: 10.4, x2: 17.6, z1: -42, z2: -1 });
   A.rects.push({ x1: 10.4, x2: 17.6, z1: 5, z2: 42 });
 
-  // ponte: deque + corrimãos
+  // ponte: peças reais do Nature Kit — deque contínuo + corrimão nas bordas.
+  // bridge_side_wood tem o corrimão na borda −X local, comprimento ao longo de Z;
+  // rotacionada ±90° o corrimão corre paralelo ao vão (eixo X do mundo).
   const deckTex = groundTexture('#9a7444', ['#8a6438', '#aa8450'], 60);
-  deckTex.repeat.set(4, 2);
-  const deck = new THREE.Mesh(new THREE.PlaneGeometry(9.4, 5.4), new THREE.MeshLambertMaterial({ map: deckTex }));
-  deck.rotation.x = -Math.PI / 2;
-  deck.position.set(14, 0.3, 2);
-  deck.receiveShadow = true;
+  deckTex.repeat.set(5, 3);
+  const wood = new THREE.MeshLambertMaterial({ color: 0x8a6438 });
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(9.6, 0.22, 5.2), new THREE.MeshLambertMaterial({ map: deckTex }));
+  deck.position.set(14, 0.19, 2);                       // topo do deque em y = 0,30
+  deck.castShadow = deck.receiveShadow = true;
   group.add(deck);
-  for (const dz of [-0.6, 4.6]) {
-    for (let i = 0; i < 4; i++) {
-      const fc = makeProp('town/fence');
-      fc.position.set(10.6 + i * 2.35, 0.3, dz);
-      group.add(fc);
+  // corrimãos contínuos: postes + duas réguas por lado
+  for (const rz of [-0.45, 4.45]) {
+    for (const ry of [0.52, 0.78]) {
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(9.6, 0.09, 0.09), wood);
+      rail.position.set(14, ry, rz);
+      rail.castShadow = true;
+      group.add(rail);
+    }
+    for (let px = 9.5; px <= 18.5; px += 1.5) {
+      const post = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.62, 0.14), wood);
+      post.position.set(px, 0.55, rz);
+      post.castShadow = true;
+      group.add(post);
     }
   }
-  A.rects.push({ x1: 10, x2: 18.2, z1: -1.1, z2: -0.4 });
-  A.rects.push({ x1: 10, x2: 18.2, z1: 4.4, z2: 5.1 });
+  // pilares de apoio mergulhando na água
+  for (const px of [12, 16]) for (const pz of [0.2, 3.8]) {
+    const pil = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.5, 0.32), wood);
+    pil.position.set(px, -0.15, pz);          // topo abaixo do deque, base na água
+    group.add(pil);
+  }
+  A.rects.push({ x1: 9.9, x2: 18.1, z1: -1.2, z2: 0.05 });
+  A.rects.push({ x1: 9.9, x2: 18.1, z1: 3.95, z2: 5.2 });
 
   // flores-do-rio (coletáveis)
   const flowerSpots = [[9.2, -8], [9.4, 12], [18.6, -14], [18.4, 8], [9.0, 22], [18.8, 24], [9.3, -22], [18.5, -27]];
