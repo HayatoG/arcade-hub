@@ -221,6 +221,10 @@ header { text-align: center; z-index: 1; }
 .badge-srv { background: rgba(110,220,90,.14); color: #6edc5a; border: 1px solid #6edc5a; }
 .badge-cripta { background: rgba(200,60,70,.14); color: #e85a64; border: 1px solid #e85a64; }
 .badge-mare { background: rgba(74,138,223,.16); color: #6aa4ef; border: 1px solid #6aa4ef; }
+.badge-corsario { background: rgba(255,184,77,.14); color: #ffb84d; border: 1px solid #ffb84d; }
+.badge-prof { background: rgba(154,123,255,.16); color: #9a7bff; border: 1px solid #9a7bff; }
+.badge-golfe { background: rgba(255,110,199,.14); color: #ff6ec7; border: 1px solid #ff6ec7; }
+.badge-trav { background: rgba(77,210,255,.14); color: #4dd2ff; border: 1px solid #4dd2ff; }
 
 .cab h2 {
   font-family: 'Kenney Future', sans-serif;
@@ -234,9 +238,21 @@ header { text-align: center; z-index: 1; }
 .cab-cripta:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(232,90,100,.3); border-color: #e85a64; }
 .cab-mare h2 { color: #6aa4ef; text-shadow: 0 0 16px rgba(106,164,239,.45); }
 .cab-mare:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(106,164,239,.3); border-color: #6aa4ef; }
+.cab-corsario h2 { color: #ffb84d; text-shadow: 0 0 16px rgba(255,184,77,.45); }
+.cab-corsario:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(255,184,77,.3); border-color: #ffb84d; }
+.cab-prof h2 { color: #9a7bff; text-shadow: 0 0 16px rgba(154,123,255,.45); }
+.cab-prof:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(154,123,255,.3); border-color: #9a7bff; }
+.cab-golfe h2 { color: #ff6ec7; text-shadow: 0 0 16px rgba(255,110,199,.45); }
+.cab-golfe:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(255,110,199,.3); border-color: #ff6ec7; }
+.cab-trav h2 { color: #4dd2ff; text-shadow: 0 0 16px rgba(77,210,255,.45); }
+.cab-trav:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(77,210,255,.3); border-color: #4dd2ff; }
 .cab:nth-child(3) { transform: rotate(-0.8deg); }
 .cab:nth-child(4) { transform: rotate(0.9deg); }
 .cab:nth-child(5) { transform: rotate(-1deg); }
+.cab:nth-child(6) { transform: rotate(1.1deg); }
+.cab:nth-child(7) { transform: rotate(-0.9deg); }
+.cab:nth-child(8) { transform: rotate(0.8deg); }
+.cab:nth-child(9) { transform: rotate(-1.1deg); }
 
 .cab p { font-size: 14px; line-height: 1.55; color: var(--dim); }
 

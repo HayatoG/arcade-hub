@@ -1,0 +1,158 @@
+@font-face {
+  font-family: 'Kenney Future';
+  src: url('assets/fonts/Kenney Future Square.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Kenney Mono';
+  src: url('assets/fonts/Kenney Mini Square Mono.ttf') format('truetype');
+}
+
+:root {
+  --brasa: #ff9c50;
+  --sangue: #d8323c;
+  --osso: #e8e2d4;
+  --abismo: #0a0812;
+  --ouro: #ffd23e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--abismo);
+  font-family: 'Kenney Mono', monospace;
+  touch-action: none;
+}
+
+#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+.hidden { display: none !important; }
+
+/* ---------- HUD ---------- */
+#hud {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between;
+  padding: 16px 20px; pointer-events: none;
+  text-shadow: 0 2px 0 rgba(0,0,0,.65);
+  z-index: 20;
+}
+.big { font-family: 'Kenney Future', sans-serif; font-size: clamp(20px, 3.4vw, 30px); color: var(--osso); }
+#hearts { color: var(--sangue); letter-spacing: .06em; text-shadow: 0 0 12px rgba(216,50,60,.5), 0 2px 0 #000; }
+.small { font-size: clamp(11px, 1.6vw, 14px); color: #b09a78; margin-top: 4px; }
+#gold { color: var(--ouro); }
+.hud-right { text-align: right; }
+.hud-right .big { color: var(--brasa); }
+#buffs { color: #8a7ba0; }
+
+#dash-wrap {
+  width: 110px; height: 7px; margin-top: 8px;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,156,80,.35);
+}
+#dash-fill { height: 100%; width: 100%; background: var(--brasa); transition: width .06s linear; }
+
+#announce {
+  position: fixed; top: 22%; left: 50%; transform: translateX(-50%);
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(20px, 4vw, 36px); color: var(--osso);
+  text-align: center; white-space: pre-line;
+  text-shadow: 0 0 22px rgba(255,156,80,.85), 0 3px 0 #000;
+  opacity: 0; transition: opacity .25s; pointer-events: none; z-index: 25;
+}
+#announce.show { opacity: 1; }
+
+#hurt-flash {
+  position: fixed; inset: 0; z-index: 30; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(216,50,60,.55) 100%);
+  opacity: 0; transition: opacity .35s;
+}
+#hurt-flash.show { opacity: 1; transition: opacity .04s; }
+
+/* ---------- Toque ---------- */
+#touch { position: fixed; inset: 0; z-index: 22; pointer-events: none; }
+#joy {
+  position: absolute; left: 26px; bottom: 30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  border: 2px solid rgba(255,156,80,.35); background: rgba(255,156,80,.07);
+}
+#joy-stick {
+  position: absolute; left: 38px; top: 38px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,156,80,.45);
+}
+#touch-btns { position: absolute; right: 24px; bottom: 30px; display: flex; gap: 16px; }
+.tbtn {
+  width: 74px; height: 74px; border-radius: 50%;
+  border: 2px solid rgba(232,226,212,.4); background: rgba(232,226,212,.1);
+  color: var(--osso); font-size: 30px; display: flex; align-items: center; justify-content: center;
+  pointer-events: auto; user-select: none; -webkit-user-select: none;
+}
+.tbtn:active { background: rgba(255,156,80,.4); }
+
+/* ---------- Overlays ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; text-align: center; padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(255,156,80,.14), transparent 55%),
+    radial-gradient(ellipse at 50% 115%, rgba(216,50,60,.18), transparent 55%),
+    rgba(7, 5, 12, .94);
+}
+
+.kicker { font-size: clamp(10px, 1.5vw, 13px); letter-spacing: .45em; color: var(--brasa); }
+
+h1 {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(44px, 9vw, 92px); line-height: 1;
+  color: var(--osso);
+  text-shadow: 0 0 28px rgba(255,156,80,.45), 4px 4px 0 #241408;
+}
+h1 span { display: block; color: var(--brasa); text-shadow: 0 0 28px rgba(255,156,80,.6), 4px 4px 0 #2a1408; }
+
+h2 {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(30px, 6vw, 54px); color: var(--sangue);
+  text-shadow: 0 0 24px rgba(216,50,60,.6);
+}
+
+.tagline { color: #a08a70; font-size: clamp(11px, 1.7vw, 14px); letter-spacing: .2em; }
+
+.story {
+  max-width: 600px; color: #cfc2ac;
+  font-size: clamp(13px, 1.9vw, 16px); line-height: 1.7;
+}
+.story b { color: var(--brasa); }
+
+.stats { color: var(--osso); font-size: clamp(15px, 2.2vw, 19px); line-height: 1.9; }
+.stats b { color: var(--ouro); }
+
+.big-btn {
+  font-family: 'Kenney Future', sans-serif;
+  font-size: clamp(17px, 2.8vw, 23px);
+  background: #a8501e; color: var(--osso);
+  border: none; padding: 14px 34px; cursor: pointer;
+  box-shadow: 0 6px 0 #5a2810, 0 0 28px rgba(255,156,80,.35);
+  transition: transform .1s, box-shadow .1s;
+}
+.big-btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 #5a2810, 0 0 28px rgba(255,156,80,.35); }
+
+.help { font-size: clamp(11px, 1.5vw, 13px); color: #6f5f4c; }
+.credits { font-size: 11px; color: #4e4234; }
+.credits a { color: var(--brasa); text-decoration: none; }
+
+/* ---------- Transição ---------- */
+#fade {
+  position: fixed; inset: 0; z-index: 55; pointer-events: none;
+  background: #000; opacity: 0; transition: opacity .35s;
+}
+#fade.show { opacity: 1; }
+
+/* ---------- Vinheta + CRT ---------- */
+.vinheta {
+  position: fixed; inset: 0; z-index: 78; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,.62) 100%);
+}
+.crt {
+  position: fixed; inset: 0; z-index: 80; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, transparent 1px 4px);
+}

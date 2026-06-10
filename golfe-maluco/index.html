@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>GOLFE MALUCO — minigolfe interplanetário</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div id="hole-label" class="big">BURACO 1 · PAR 2</div>
+      <div id="strokes" class="small">tacadas: 0</div>
+    </div>
+    <div class="hud-right">
+      <div id="total" class="big">TOTAL 0</div>
+      <div id="record-live" class="small"></div>
+    </div>
+  </div>
+  <div id="announce"></div>
+  <div id="power-wrap" class="hidden"><div id="power-fill"></div></div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>GOLFE<span>MALUCO</span></h1>
+    <p class="tagline">torneio interplanetário · 12 buracos insanos</p>
+    <p class="story">Chegou o dia do <b>Torneio Interplanetário de Minigolfe</b>!
+      Doze buracos cada vez mais malucos esperam por você: rampas, túneis,
+      saltos sobre o vazio, blocos travessos e o temível <b>MOINHO</b>.<br><br>
+      Arraste a partir da bola para mirar como um <b>estilingue</b> — quanto mais
+      puxar, mais forte a tacada. Feche os 12 buracos <b>abaixo do par</b> e o
+      troféu dourado da galáxia é seu!</p>
+    <button id="btn-start" class="big-btn">▶ PRIMEIRA TACADA ⏎</button>
+    <p class="help">arraste da bola para mirar · solte para tacar · arraste fora para girar a câmera · R câmera · M som</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · <span id="record">sem recorde ainda</span> · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Fim -->
+  <div id="end" class="overlay hidden">
+    <h2 id="end-title">FIM DO TORNEIO</h2>
+    <div id="stars"></div>
+    <div id="scorecard"></div>
+    <p id="end-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">JOGAR DE NOVO ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">PREPARANDO O GRAMADO...</p></div>
+  <div class="crt"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script>
+    document.write('<script type="module" src="js/game.js?v=' + __V + '"><\/script>');
+  </script>
+</body>
+</html>

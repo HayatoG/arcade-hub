@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>PROFUNDEZAS — a descida sem fim</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div id="hearts" class="big">♥♥♥♥♥</div>
+      <div id="gold" class="small">⛃ 0</div>
+      <div id="dash-wrap"><div id="dash-fill"></div></div>
+    </div>
+    <div class="hud-right">
+      <div id="room-label" class="big">SALA 1</div>
+      <div id="kills" class="small">abates: 0</div>
+      <div id="buffs" class="small"></div>
+    </div>
+  </div>
+  <div id="announce"></div>
+  <div id="hurt-flash"></div>
+
+  <!-- Controles de toque -->
+  <div id="touch" class="hidden">
+    <div id="joy"><div id="joy-stick"></div></div>
+    <div id="touch-btns">
+      <div id="btn-dash-t" class="tbtn">⇢</div>
+      <div id="btn-atk-t" class="tbtn">⚔</div>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>PROFUN<span>DEZAS</span></h1>
+    <p class="tagline">roguelite de masmorra · a descida sem fim</p>
+    <p class="story">A <b>Coroa do Rei Cego</b> foi arrastada para as Profundezas.
+      Cada sala desce mais um degrau. Ninguém jamais voltou para contar o fundo.<br><br>
+      Limpe a sala, escolha sua <b>bênção</b> e desça. Zumbis, esqueletos, vampiros e
+      fantasmas que <b>atravessam paredes</b> guardam cada degrau — e a cada cinco salas,
+      um <b>guardião de elite</b> espera no escuro.<br><br>
+      Até onde você desce?</p>
+    <button id="btn-start" class="big-btn">▶ DESCER ⏎</button>
+    <p class="help">WASD/setas mover · ESPAÇO/J/clique atacar · SHIFT/K dash · M som</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · recorde: <span id="record">0</span> salas · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Fim -->
+  <div id="end" class="overlay hidden">
+    <h2>AS PROFUNDEZAS TE ENGOLIRAM</h2>
+    <p id="end-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">DESCER DE NOVO ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">ACENDENDO AS TOCHAS...</p></div>
+  <div id="fade"></div>
+  <div class="vinheta"></div>
+  <div class="crt"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script>
+    document.write('<script type="module" src="js/game.js?v=' + __V + '"><\/script>');
+  </script>
+</body>
+</html>

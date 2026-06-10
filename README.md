@@ -1,6 +1,6 @@
 # KEPLER ARCADE 🕹️
 
-Fliperama virtual com três jogos completos, feitos só com tecnologias web e
+Fliperama virtual com nove jogos completos, feitos só com tecnologias web e
 assets [Kenney](https://kenney.nl) (CC0).
 
 **Jogar online:** https://hayatog.github.io/arcade-hub/
@@ -12,6 +12,43 @@ assets [Kenney](https://kenney.nl) (CC0).
 | ÚLTIMO BASTIÃO (`ultimo-bastiao/`) | Survivors + tower defense | Phaser |
 | ÚLTIMO BASTIÃO 3D (`bastiao-3d/`) | Survivors isométrico (estilo Diablo) | Three.js + glTF animado |
 | MARÉ VERMELHA (`mare-vermelha/`) | Bridge runner de horda infinita | Three.js + glTF animado |
+| CORSÁRIO (`corsario/`) | Combate naval em mar aberto | Three.js + glTF |
+| PROFUNDEZAS (`profundezas/`) | Roguelite de masmorra sala-a-sala | Three.js + glTF animado |
+| GOLFE MALUCO (`golfe-maluco/`) | Minigolfe físico de 12 buracos | Three.js + glTF |
+| TRAVESSIA (`travessia/`) | Arcade de travessia infinita (estilo Crossy Road) | Three.js + glTF |
+
+## CORSÁRIO — a maré fantasma
+
+1717: você é o último corsário da Coroa Livre. Mar com ondas vivas, ciclo
+dia/noite, bordadas balísticas, mercantes para saquear e fragatas da Armada na
+sua esteira. Ouro sobe o nível do navio (chalupa → bergantim → galeão) com
+escolha de cartas de upgrade; a cada 5 marés a névoa fecha e o **Navio
+Fantasma** aparece. Tempestades com raios, baús, barris de reparo e naufrágio
+cinematográfico. Recorde: ouro saqueado.
+
+## PROFUNDEZAS — a coroa do Rei Cego
+
+Roguelite de masmorra com câmera ao estilo Hades: salas procedurais, espada
+com arco de 120°, dash com i-frames, armadilhas de espinhos e cinco inimigos
+animados (zumbi, esqueleto, orc, vampiro e um fantasma que atravessa paredes e
+sussurra antes de aparecer). Limpe a sala, escolha 1 de 2 bênçãos e desça —
+a cada 5 salas, um guardião de elite com ataque em área telegrafado. Recorde:
+salas vencidas.
+
+## GOLFE MALUCO — torneio interplanetário
+
+Minigolfe 3D com física própria (raycast de terreno, reflexão nas paredes,
+rampas, túneis e saltos): 12 buracos artesanais com moinho giratório, blocos
+deslizantes e um grande finale. Mira estilingue com prévia de trajetória,
+anúncios de BIRDIE/EAGLE/ACE, confete e cartão final com estrelas. Recorde:
+menor total de tacadas.
+
+## TRAVESSIA — o pintinho atravessador
+
+Crossy Road à brasileira: grama, estradas, trilhos (o trem avisa com sino e
+luz — e passa voando) e rios com troncos à deriva. A câmera avança sozinha e
+uma águia leva quem fica parado. Moedas alimentam a **máquina de prêmios**, que
+sorteia 13 bichos jogáveis (Cube Pets). Recorde: passos.
 
 ## MARÉ VERMELHA — a ponte infinita
 

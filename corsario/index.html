@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>CORSÁRIO — combate naval em mar aberto</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div id="gold" class="big">⛁ 0</div>
+      <div id="record-live" class="small">recorde 0</div>
+      <div class="bar-wrap"><div id="hull-bar" class="bar-fill"></div></div>
+      <div id="ship-level" class="small">CHALUPA · NÍVEL 1</div>
+    </div>
+    <div class="hud-right">
+      <div id="tide" class="big">MARÉ 1</div>
+      <div id="sunk" class="small">afundados: 0</div>
+      <div class="bar-wrap reload"><div id="reload-bar" class="bar-fill"></div></div>
+      <div id="reload-label" class="small">CANHÕES PRONTOS</div>
+    </div>
+  </div>
+  <div id="announce"></div>
+  <button id="btn-fire" class="hidden">💥</button>
+
+  <!-- Cartas de upgrade -->
+  <div id="cards" class="overlay hidden">
+    <p class="kicker">O NAVIO SOBE DE NÍVEL</p>
+    <h2 class="gold-h2" id="cards-title">ESCOLHA UMA MELHORIA</h2>
+    <div class="card-row">
+      <button class="card" data-i="0"></button>
+      <button class="card" data-i="1"></button>
+      <button class="card" data-i="2"></button>
+    </div>
+    <p class="help">clique numa carta · ou teclas 1 2 3</p>
+  </div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>COR<span>SÁRIO</span></h1>
+    <p class="tagline">combate naval · saque · maré fantasma</p>
+    <p class="story">Ano de 1717. A Armada tomou os mares e enforcou a Coroa Livre,
+      bandeira por bandeira. Restou <b>um</b> navio — o seu.<br><br>
+      Cace mercantes gordos de ouro, troque <b>bordadas</b> com as fragatas da
+      Armada e gaste o saque em pólvora, velas e casco. A cada limiar de ouro,
+      seu navio <b>evolui</b>: da chalupa ao galeão.<br><br>
+      Mas cuidado com a quinta maré… dizem que nela a névoa fecha,
+      e o <b>Navio Fantasma</b> cobra a passagem.</p>
+    <button id="btn-start" class="big-btn">▶ ZARPAR ⏎</button>
+    <p class="help">◄ ► leme · ▲ ▼ velas · ESPAÇO bordada · M som · toque: arraste + botão</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · recorde: <span id="record">0</span> de ouro · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Fim -->
+  <div id="end" class="overlay hidden">
+    <h2>NAUFRÁGIO</h2>
+    <p id="end-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">ZARPAR DE NOVO ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">IÇANDO AS VELAS...</p></div>
+  <div class="crt"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script>
+    document.write('<script type="module" src="js/game.js?v=' + __V + '"><\/script>');
+  </script>
+</body>
+</html>

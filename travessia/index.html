@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>TRAVESSIA — atravesse. para sempre.</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div id="steps" class="big">0</div>
+      <div id="record-live" class="small">recorde 0</div>
+    </div>
+    <div class="hud-right">
+      <div id="coins" class="big">🪙 0</div>
+      <div id="run-coins" class="small">+0 nesta corrida</div>
+    </div>
+  </div>
+  <div id="announce"></div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>TRA<span>VESSIA</span></h1>
+    <p class="tagline">atravesse · de todos os lados · para sempre</p>
+    <p class="story">O pintinho olhou a estrada. Depois o rio. Depois os trilhos.
+      <br>— Eu vou — disse ele.<br>
+      Ninguém sabe por quê. Ele só quer <b>chegar do outro lado</b>. De todos os
+      lados. Para sempre. Junte <b>moedas</b>, abra a <b>máquina de prêmios</b> e
+      apresse o passo: a <b>águia</b> não espera ninguém.</p>
+
+    <div id="sel">
+      <button id="sel-prev" class="sel-btn" aria-label="anterior">‹</button>
+      <div class="sel-mid">
+        <img id="sel-img" alt="bicho" width="110" height="110">
+        <div id="sel-name">PINTINHO</div>
+      </div>
+      <button id="sel-next" class="sel-btn" aria-label="próximo">›</button>
+    </div>
+
+    <button id="btn-start" class="big-btn">▶ ATRAVESSAR ⏎</button>
+    <div class="bank-row">
+      <span id="bank">🪙 <b id="bank-n">0</b></span>
+      <button id="btn-gacha" class="gacha-btn">🎁 MÁQUINA DE PRÊMIOS <small>(100 moedas)</small></button>
+    </div>
+    <p class="help">setas / WASD · toque: tap = frente, deslize = direção · segure para carregar o pulo · M som</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · recorde: <span id="record">0</span> passos · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Máquina de prêmios -->
+  <div id="gacha" class="overlay hidden">
+    <h2 class="gacha-title">MÁQUINA DE PRÊMIOS</h2>
+    <div id="capsule">
+      <div class="cap-top"></div>
+      <div class="cap-bottom"></div>
+    </div>
+    <div id="gacha-result" class="hidden">
+      <img id="gacha-img" alt="prêmio" width="130" height="130">
+      <h3 id="gacha-name"></h3>
+      <p id="gacha-sub"></p>
+    </div>
+    <button id="gacha-ok" class="big-btn hidden">LEGAL!</button>
+  </div>
+
+  <!-- Fim -->
+  <div id="end" class="overlay hidden">
+    <h2 id="end-title">FIM DA TRAVESSIA</h2>
+    <p id="end-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">ATRAVESSAR DE NOVO ⏎</button>
+    <button id="btn-menu" class="mini-btn">menu &amp; máquina de prêmios</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">CHOCANDO O PINTINHO...</p></div>
+  <div class="crt"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script>
+    document.write('<script type="module" src="js/game.js?v=' + __V + '"><\/script>');
+  </script>
+</body>
+</html>
