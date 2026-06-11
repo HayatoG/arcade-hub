@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>BATE-ASA — o pinguim que decidiu voar</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="hud-left">
+        <div id="fichas" class="small">🪙 0</div>
+        <div id="loops" class="small">⭐ 0</div>
+      </div>
+      <div id="score" class="big">0</div>
+      <div class="hud-right">
+        <div id="ala-label" class="small">ALA MADEIRA</div>
+        <div id="speed" class="small">11 km/h</div>
+      </div>
+    </div>
+    <div id="impeto-wrap">
+      <div id="impeto-bar"><div id="impeto-fill"></div></div>
+      <div id="impeto-hint" class="hidden">RAJADA PRONTA — APERTE E</div>
+    </div>
+    <div id="combo" class="hidden"><span id="combo-x">RASPÃO ×2</span></div>
+  </div>
+  <div id="announce"></div>
+  <div id="wind-flash"></div>
+
+  <!-- Controles de toque -->
+  <div id="touch" class="hidden">
+    <button id="t-left" class="t-btn">◀</button>
+    <button id="t-right" class="t-btn">▶</button>
+    <button id="t-dive" class="t-btn">▼</button>
+    <button id="t-rajada" class="t-btn hidden">🚀</button>
+  </div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>BATE<span>-ASA</span></h1>
+    <p class="tagline">o pinguim que decidiu voar</p>
+    <p class="story">Todo mundo riu quando o pinguim <b>Torpedo</b> fugiu do aquário do
+      Kepler Park dizendo que ia <b>voar</b>. Ninguém riu quando ele atravessou a
+      montanha-russa inteira batendo as nadadeiras como um maluco.<br><br>
+      Desvie dos pilares, passe <b>por dentro dos loopings</b>, fuja dos trens —
+      e quando a barra de <b>ÍMPETO</b> encher, solte a <b>RAJADA</b>: por alguns
+      segundos, Torpedo lembra que embaixo d'água ele é um míssil.</p>
+    <div id="skin-row">
+      <button id="skin-prev" class="skin-arrow">‹</button>
+      <div id="skin-box">
+        <div id="skin-name">PINGUIM "TORPEDO"</div>
+        <div id="skin-req" class="hidden"></div>
+      </div>
+      <button id="skin-next" class="skin-arrow">›</button>
+    </div>
+    <button id="btn-start" class="big-btn">▶ ALÇAR VOO ⏎</button>
+    <p class="help">ESPAÇO/clique bate asa · A/D ou ←/→ desvia · S/↓ mergulha · E rajada · M som · P pausa</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · recorde: <span id="record">0</span> pts · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Fim -->
+  <div id="end" class="overlay hidden">
+    <h2 id="end-title">DEPENADO</h2>
+    <p id="end-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">VOAR DE NOVO ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">ABRINDO OS PORTÕES DO PARQUE...</p></div>
+  <div id="fade"></div>
+  <div class="vinheta"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script type="module">
+    import('./js/game.js?v=' + __V);
+  </script>
+</body>
+</html>

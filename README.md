@@ -1,6 +1,6 @@
 # KEPLER ARCADE 🕹️
 
-Fliperama virtual com onze jogos completos, feitos só com tecnologias web e
+Fliperama virtual com doze jogos completos, feitos só com tecnologias web e
 assets [Kenney](https://kenney.nl) (CC0).
 
 **Jogar online:** https://hayatog.github.io/arcade-hub/
@@ -20,6 +20,22 @@ assets [Kenney](https://kenney.nl) (CC0).
 | TRAVESSIA (`travessia/`) | Arcade de travessia infinita (estilo Crossy Road) | Three.js + glTF |
 | BALAS & BRUXARIA (`balas-e-bruxaria/`) | RPG isométrico de fantasia (com armas de fogo!) | Three.js + glTF animado |
 | VORAZ (`voraz/`) | Hole.io de cidade procedural infinita | Three.js + glTF |
+| BATE-ASA (`bate-asa/`) | Flappy Bird 3D num parque de diversões | Three.js + glTF |
+
+## BATE-ASA — o pinguim que decidiu voar
+
+Flappy Bird em 3D: o pinguim Torpedo fugiu do aquário do Kepler Park decidido
+a voar — batendo as nadadeiras pela montanha-russa inteira. Além do bater de
+asas clássico, há **desvio lateral**, **mergulho rápido** e paredes de pilares
+cujo vão muda de lugar (e **oscila** nos níveis altos). Passe **por dentro dos
+loopings** para pontos extras, desvie dos **trens da montanha-russa** que
+cruzam o corredor e aguente as **rajadas de vento** lateral. Fichas douradas
+enchem a barra de **ÍMPETO**: cheia, solte a **RAJADA** — por 2,6 s o pinguim
+"nada no ar" como um torpedo, invencível. O parque muda a cada 12 pontos
+(Madeira → Aço → Flume → **Neon noturno**) e depois recomeça mais difícil.
+Caixas-surpresa dão bolha de ar (um choque grátis) ou ímã de fichas. Recordes
+desbloqueiam skins: o pintinho da TRAVESSIA e um papagaio que já sabia voar.
+Teclado, mouse ou toque.
 
 ## VORAZ — o buraco que engoliu a cidade
 
