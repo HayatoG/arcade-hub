@@ -226,6 +226,7 @@ header { text-align: center; z-index: 1; }
 .badge-golfe { background: rgba(255,110,199,.14); color: #ff6ec7; border: 1px solid #ff6ec7; }
 .badge-trav { background: rgba(77,210,255,.14); color: #4dd2ff; border: 1px solid #4dd2ff; }
 .badge-rpg { background: rgba(46,230,168,.14); color: #2ee6a8; border: 1px solid #2ee6a8; }
+.badge-voraz { background: rgba(255,61,240,.14); color: #ff3df0; border: 1px solid #ff3df0; }
 
 .cab h2 {
   font-family: 'Kenney Future', sans-serif;
@@ -249,6 +250,8 @@ header { text-align: center; z-index: 1; }
 .cab-trav:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(77,210,255,.3); border-color: #4dd2ff; }
 .cab-rpg h2 { color: #2ee6a8; text-shadow: 0 0 16px rgba(46,230,168,.45); }
 .cab-rpg:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(46,230,168,.3); border-color: #2ee6a8; }
+.cab-voraz h2 { color: #ff3df0; text-shadow: 0 0 16px rgba(255,61,240,.45); }
+.cab-voraz:hover { box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 38px rgba(255,61,240,.3); border-color: #ff3df0; }
 .cab:nth-child(3) { transform: rotate(-0.8deg); }
 .cab:nth-child(4) { transform: rotate(0.9deg); }
 .cab:nth-child(5) { transform: rotate(-1deg); }

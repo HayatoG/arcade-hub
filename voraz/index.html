@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕳️</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>VORAZ — o buraco que engoliu a cidade</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="hud-left">
+        <div id="tons" class="big">0 t</div>
+        <div id="tier-label" class="small">NÍVEL 1 · COME-CONES</div>
+        <div id="hunger-wrap" title="fome"><div id="hunger-fill"></div></div>
+      </div>
+      <div class="hud-right">
+        <div id="clock" class="big">0:00</div>
+        <div id="eaten" class="small">devorados: 0</div>
+        <div id="rival-info" class="small hidden">⚫ rival: <span id="rival-tons">0 t</span></div>
+      </div>
+    </div>
+    <div id="combo" class="hidden"><span id="combo-x">×1</span><div id="combo-bar"><div id="combo-fill"></div></div></div>
+    <div id="rival-arrow" class="hidden">⮕</div>
+  </div>
+  <div id="announce"></div>
+  <div id="hunger-flash"></div>
+
+  <!-- Controles de toque -->
+  <div id="touch" class="hidden">
+    <div id="joy"><div id="joy-stick"></div></div>
+  </div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>VO<span>RAZ</span></h1>
+    <p class="tagline">o buraco que engoliu a cidade</p>
+    <p class="story">Numa terça-feira comum, o asfalto da Avenida Kepler <b>abriu</b>.
+      Não é um buraco de obra. Ele tem <b>fome</b> — e cresce com tudo o que come.<br><br>
+      Comece pelos cones e lixeiras. Depois os carros. Depois as casas.
+      Depois... <b>os arranha-céus</b>. Mas a fome nunca para de descer:
+      se zerar, o buraco <b>fecha para sempre</b>.<br><br>
+      E tem mais: você não é o único buraco da cidade.</p>
+    <button id="btn-start" class="big-btn">▶ ABRIR O BURACO ⏎</button>
+    <p class="help">WASD/setas ou mouse pressionado · M som · celular: arraste o dedo</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · recorde: <span id="record">0</span> t · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Fim -->
+  <div id="end" class="overlay hidden">
+    <h2 id="end-title">O BURACO FECHOU</h2>
+    <p id="end-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">ABRIR DE NOVO ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">RACHANDO O ASFALTO...</p></div>
+  <div id="fade"></div>
+  <div class="vinheta"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script type="module">
+    import('./js/game.js?v=' + __V);
+  </script>
+</body>
+</html>

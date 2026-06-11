@@ -1,6 +1,6 @@
 # KEPLER ARCADE 🕹️
 
-Fliperama virtual com dez jogos completos, feitos só com tecnologias web e
+Fliperama virtual com onze jogos completos, feitos só com tecnologias web e
 assets [Kenney](https://kenney.nl) (CC0).
 
 **Jogar online:** https://hayatog.github.io/arcade-hub/
@@ -19,6 +19,19 @@ assets [Kenney](https://kenney.nl) (CC0).
 | GOLFE MALUCO (`golfe-maluco/`) | Minigolfe físico de 12 buracos | Three.js + glTF |
 | TRAVESSIA (`travessia/`) | Arcade de travessia infinita (estilo Crossy Road) | Three.js + glTF |
 | BALAS & BRUXARIA (`balas-e-bruxaria/`) | RPG isométrico de fantasia (com armas de fogo!) | Three.js + glTF animado |
+| VORAZ (`voraz/`) | Hole.io de cidade procedural infinita | Three.js + glTF |
+
+## VORAZ — o buraco que engoliu a cidade
+
+Hole.io de mundo aberto: você é uma fenda voraz numa cidade **procedural e
+infinita** (subúrbios, centros comerciais, arranha-céus, parques e obras,
+gerados em chunks com seed nova a cada partida). Coma cones → carros → casas →
+**arranha-céus inteiros**, cresça e suba de nível (5 tiers com anúncios).
+A **fome drena sem parar** — zerou, o buraco fecha. Carros fogem de você,
+viaturas aparecem quando você fica grande, combos multiplicam a massa e, aos
+60 segundos, **outro buraco abre no asfalto**: devore-o antes que ele te devore
+(cada rival novo nasce maior). Câmera afasta conforme você cresce, tremor de
+tela ao engolir prédios e recorde em toneladas. Teclado, mouse ou toque.
 
 ## BALAS & BRUXARIA — RPG de pólvora e poção
 
