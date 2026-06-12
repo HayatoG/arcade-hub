@@ -12,7 +12,8 @@ const SFX = () => AudioSys;
 const GRAV = 34, TERM = -26;
 const WALK = 6.2, ACC_G = 60, ACC_A = 38, FRIC = 48;
 const ACC_ICE = 26, FRIC_ICE = 7;
-const JUMP_V = 12.6, DJUMP_V = 11.0, COYOTE = 0.1, JBUF = 0.12;
+const JUMP_V = 12.6, DJUMP_V = 12.6, COYOTE = 0.1, JBUF = 0.12;
+const SPRING_V = 19, SPRING_MEGA_V = 23;
 const POUND_V = -28, HALF = 0.3, TALL = 0.9;
 
 export function spawnChar(name, height, tint) {
@@ -44,6 +45,13 @@ export class Player {
     const ch = spawnChar('character-oobi', 0.95, 0x9af065);
     this.ch = ch;
     this.mesh = ch.wrap;
+    // nó da pirueta: gira pelo centro do corpo, sem compor com o yaw do wrap
+    this.spinner = new THREE.Group();
+    this.mesh.remove(ch.inner);
+    this.spinner.position.y = 0.475;
+    ch.inner.position.y = -0.475;
+    this.spinner.add(ch.inner);
+    this.mesh.add(this.spinner);
     this.x = 4; this.y = 5; this.vx = 0; this.vy = 0;
     this.face = 1;
     this.onGround = false;
@@ -55,6 +63,7 @@ export class Player {
     this.sq = 1; this.sqV = 0;   // mola do squash
     this.anim = ''; this.runDust = 0;
     this.spin = 0;               // pirueta do pulo duplo
+    this.jumpCut = false;        // o corte de altura só vale p/ pulos do jogador
     this.standMover = null;
     this._solids = [];
   }
@@ -63,7 +72,10 @@ export class Player {
     this.x = x; this.y = y; this.vx = 0; this.vy = 0;
     this.dead = false; this.won = false; this.frozen = false;
     this.pounding = false; this.inv = 1.2; this.jumps = 0;
-    this.spin = 0; this.sq = 1; this.sqV = 0;
+    this.spin = 0; this.sq = 1; this.sqV = 0; this.jumpCut = false;
+    // zera qualquer rotação residual (tombo da morte, pirueta interrompida)
+    this.mesh.rotation.set(0, this.face > 0 ? Math.PI / 2 - 0.22 : -Math.PI / 2 + 0.22, 0);
+    this.spinner.rotation.set(0, 0, 0);
     this.mesh.visible = true;
     this.setAnim('idle', 0);
     this.place();
@@ -87,14 +99,14 @@ export class Player {
   // ---------- reações ----------
   bounce(strong) {
     this.vy = strong || (INPUT.jumpHeld ? 15 : 10);
-    this.jumps = 1; this.pounding = false;
+    this.jumps = 1; this.pounding = false; this.jumpCut = false;
     this.sqV = 4;
   }
-  crateBounce() { this.vy = INPUT.jumpHeld ? 12 : 8; this.jumps = 1; }
+  crateBounce() { this.vy = INPUT.jumpHeld ? 12 : 8; this.jumps = 1; this.jumpCut = false; }
   springBounce() {
     const mega = this.pounding;
-    this.vy = mega ? 22 : 18;
-    this.pounding = false; this.jumps = 1;
+    this.vy = mega ? SPRING_MEGA_V : SPRING_V;
+    this.pounding = false; this.jumps = 1; this.jumpCut = false;
     this.sqV = 5;
     burst(this.x, this.y, 0, mega ? 0xffd34d : 0xbfffa0, mega ? 18 : 10, { speed: 3, up: 5, life: 0.5 });
     SFX().play('spring', 0.9, mega ? 0.8 : 1);
@@ -178,19 +190,19 @@ export class Player {
     if (this.jbuf > 0 && !this.pounding) {
       if (this.onGround || this.coyote > 0) {
         this.vy = JUMP_V; this.jumps = 1; this.jbuf = 0; this.coyote = 0;
-        this.onGround = false;
+        this.onGround = false; this.jumpCut = true;
         this.sqV = 3.5;
         burst(this.x, this.y, 0, 0xcfd8c8, 5, { speed: 1.6, up: 1.2, life: 0.3, grav: 3 });
         SFX().play('jump', 0.75);
       } else if (this.jumps === 1) {
-        this.vy = DJUMP_V; this.jumps = 2; this.jbuf = 0;
+        this.vy = DJUMP_V; this.jumps = 2; this.jbuf = 0; this.jumpCut = true;
         this.spin = Math.PI * 2;
         burst(this.x, this.y + 0.3, 0, 0xffffff, 9, { speed: 2.6, up: 2, life: 0.4, grav: 2 });
         SFX().play('djump', 0.8);
       }
     }
-    // corte de pulo (altura variável)
-    if (!INPUT.jumpHeld && this.vy > 4 && !this.pounding) this.vy = 4;
+    // corte de pulo (altura variável) — só nos pulos do jogador, nunca em mola/quique
+    if (!INPUT.jumpHeld && this.vy > 4 && this.jumpCut && !this.pounding) this.vy = 4;
 
     // ---- quicada
     if (INPUT.pressed('pound') && !this.onGround && !this.pounding) {
@@ -265,7 +277,7 @@ export class Player {
         burst(this.x, this.y + 0.05, 0, 0xd8cfa8, 22, { speed: 6.5, up: 2.5, life: 0.55, grav: 8 });
         SFX().play('pound', 1);
         if (INPUT.jumpHeld) {           // super quique
-          this.vy = 16.5; this.jumps = 1; this.onGround = false;
+          this.vy = 16.5; this.jumps = 1; this.onGround = false; this.jumpCut = false;
           SFX().play('djump', 0.9, 0.8);
         } else this.sqV = -8;
       } else {
@@ -295,8 +307,8 @@ export class Player {
     if (this.spin > 0) {
       const d = Math.min(this.spin, dt * 13);
       this.spin -= d;
-      this.mesh.rotation.x -= d * this.face;
-    } else this.mesh.rotation.x *= (1 - Math.min(1, dt * 16));
+      this.spinner.rotation.x -= d;
+    } else this.spinner.rotation.x *= (1 - Math.min(1, dt * 16));
 
     // mola do squash
     this.sqV += (1 - this.sq) * 130 * dt;
