@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🟢</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>GELECO — a geleca que quica</title>
+  <script>
+    window.__V = Date.now();
+    document.write('<link rel="stylesheet" href="style.css?v=' + __V + '">');
+  </script>
+  <noscript><link rel="stylesheet" href="style.css"></noscript>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD da fase -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="hud-left">
+        <div id="hearts">💚💚💚</div>
+        <div id="coins" class="small">🪙 0</div>
+      </div>
+      <div id="level-label" class="mid-label"></div>
+      <div class="hud-right">
+        <div id="stars">☆☆☆</div>
+        <div id="hud-hint" class="small"></div>
+      </div>
+    </div>
+    <!-- barra do chefe -->
+    <div id="boss-bar-wrap" class="hidden">
+      <div id="boss-name">👑 REI BOCÃO</div>
+      <div id="boss-bar"><div id="boss-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- painel do mapa -->
+  <div id="map-ui" class="hidden">
+    <div id="map-card">
+      <div id="map-name">VALE QUICANTE</div>
+      <div id="map-stars">★★★</div>
+      <div id="map-hint">A / ESPAÇO — ENTRAR</div>
+    </div>
+  </div>
+
+  <div id="announce"></div>
+
+  <!-- Controles de toque -->
+  <div id="touch" class="hidden">
+    <button id="t-left" class="t-btn">◀</button>
+    <button id="t-right" class="t-btn">▶</button>
+    <button id="t-pound" class="t-btn t-act">▼</button>
+    <button id="t-jump" class="t-btn t-act t-big">⬆</button>
+    <button id="t-pause" class="t-btn t-mini">II</button>
+  </div>
+
+  <!-- Menu inicial -->
+  <div id="menu" class="overlay">
+    <p class="kicker">KEPLER ARCADE APRESENTA</p>
+    <h1>GELE<span>CO</span></h1>
+    <p class="tagline">a geleca que quica</p>
+    <p class="story">O <b>REI BOCÃO</b> engoliu as estrelas do Vale Quicante e o céu
+      ficou cinza. Os doces graúdos fugiram. Sobrou <b>Geleco</b> — a gelatininha
+      de sobremesa que ninguém levava a sério.<br><br>
+      Quique pelo vale, atravesse os picos congelados e invada o trono do glutão.
+      <b>Pulo duplo</b> pra alcançar o impossível e <b>QUICADA</b> pra esmagar o
+      que parecer sólido demais. As <b>7 estrelas</b> contam com você.</p>
+    <button id="btn-start" class="big-btn">▶ QUICAR ⏎</button>
+    <p class="help">A/D ou ←/→ anda · ESPAÇO pula (2× no ar = pirueta) · S/↓ QUICADA · P pausa · M som<br>
+      🎮 controle: stick anda · A pula · B/X quicada · Start pausa · 📱 toque na tela</p>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a> · estrelas: <span id="record">0</span>/7 · kenney.nl (CC0)</p>
+  </div>
+
+  <!-- Fase completa -->
+  <div id="clear" class="overlay hidden">
+    <p class="kicker">FASE COMPLETA</p>
+    <h2 class="good" id="clear-title">QUE QUICADA!</h2>
+    <div id="clear-stars"><span>☆</span><span>☆</span><span>☆</span></div>
+    <p id="clear-stats" class="stats"></p>
+    <button id="btn-next" class="big-btn">SEGUIR VIAGEM ⏎</button>
+  </div>
+
+  <!-- Morte -->
+  <div id="dead" class="overlay hidden">
+    <h2 id="dead-title">DERRETEU!</h2>
+    <p id="dead-stats" class="stats"></p>
+    <button id="btn-retry" class="big-btn">DO CHECKPOINT ⏎</button>
+    <p class="credits"><a href="#" id="dead-tomap">← desistir e voltar ao mapa</a></p>
+  </div>
+
+  <!-- Final -->
+  <div id="final" class="overlay hidden">
+    <p class="kicker">O CÉU BRILHOU DE NOVO</p>
+    <h2 class="good">REI BOCÃO DESTRONADO!</h2>
+    <p class="story" id="final-story">O Rei Bocão soltou um arroto que devolveu as estrelas ao céu.
+      O Vale Quicante voltou a quicar — e nunca mais chamaram o Geleco de "sobremesinha".</p>
+    <p id="final-stats" class="stats"></p>
+    <button id="btn-final" class="big-btn">VOLTAR AO MAPA ⏎</button>
+    <p class="credits"><a href="../index.html">← voltar ao hub</a></p>
+  </div>
+
+  <!-- Pausa -->
+  <div id="pause" class="overlay hidden">
+    <h2 class="good">PAUSA</h2>
+    <p class="stats" id="pause-stats"></p>
+    <button id="btn-resume" class="big-btn">CONTINUAR ⏎</button>
+    <p class="credits"><a href="#" id="pause-tomap">← abandonar fase (volta ao mapa)</a></p>
+  </div>
+
+  <div id="loading" class="overlay"><p class="story">PREPARANDO A GOSMA...</p></div>
+  <div id="fade"></div>
+  <div class="vinheta"></div>
+
+  <script src="js/audio.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js" } }
+  </script>
+  <script type="module">
+    import('./js/game.js?v=' + __V);
+  </script>
+</body>
+</html>

@@ -184,7 +184,7 @@
 
 ---
 
-## ✅ O que o hub já usa (12 jogos)
+## ✅ O que o hub já usa (13 jogos)
 
 | Jogo | Kits 3D / sprites | Áudio |
 |---|---|---|
@@ -200,6 +200,7 @@
 | BALAS & BRUXARIA | Fantasy Town, Nature, Mini Dungeon, Graveyard, Blocky Characters, Medieval Weapons, Weapon Pack, Fantasy UI Borders, Game Icons | Music Loops (6 trilhas), RPG, Impact, Interface, Jingles |
 | VORAZ | City Kits, Car Kit, Modular Buildings | Music Loops, Impact, Interface |
 | BATE-ASA | **Coaster Kit** (pilares, loopings, trilhos, trens, barracas), Cube Pets, Toy Car Kit (fichas/caixa), Platformer Kit (estrela) | Music Loops (Wacky Waiting, Swinging Pants, Night at the Beach), Retro 2, Impact, Interface, Jingles |
+| GELECO | **Platformer Kit** (blocos grass/snow, caixas, molas, serras, espinhos, bandeira, porta, cadeado + personagens oobi/oozi/oodi/oopi animados ✔) | Music Loops (Cheerful Annoyance, Farm Frolics, Flowing Rocks, Mission Plausible), Retro 1+2, Impact, Interface, Jingles |
 
 ## 💡 Combinações prontas — o que dá pra fazer em seguida
 
@@ -216,4 +217,4 @@
 11. **⛺ Ilha relax** — Nature Kit (329!) + Survival Kit + Cube Pets + Music Loops suaves. *A Short Hike: explorar, coletar, conversar.*
 12. **🃏 Mesa de cassino** — Playing Cards 2D + Casino Audio (cartas, fichas, dados) + Fantasy UI Borders. *Balatro-lite / blackjack roguelike.*
 
-> **Maior potencial inexplorado:** Marble Kit e Food Kit são os kits mais ricos que ainda não usamos — o Coaster Kit estreou no BATE-ASA (e ainda sobram flumes d'água, estações e filas!), e as peças spline do Minigolf Kit (com looping!) ficaram de fora do Golfe Maluco.
+> **Maior potencial inexplorado:** Marble Kit e Food Kit são os kits mais ricos que ainda não usamos — o Platformer Kit estreou de verdade no GELECO (mas sobraram alavancas, botões, esteiras, portas giratórias e escadas!), o Coaster Kit ainda tem flumes d'água e filas, e as peças spline do Minigolf Kit (com looping!) ficaram de fora do Golfe Maluco.

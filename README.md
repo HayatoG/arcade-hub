@@ -1,6 +1,6 @@
 # KEPLER ARCADE 🕹️
 
-Fliperama virtual com doze jogos completos, feitos só com tecnologias web e
+Fliperama virtual com treze jogos completos, feitos só com tecnologias web e
 assets [Kenney](https://kenney.nl) (CC0).
 
 **Jogar online:** https://hayatog.github.io/arcade-hub/
@@ -21,6 +21,23 @@ assets [Kenney](https://kenney.nl) (CC0).
 | BALAS & BRUXARIA (`balas-e-bruxaria/`) | RPG isométrico de fantasia (com armas de fogo!) | Three.js + glTF animado |
 | VORAZ (`voraz/`) | Hole.io de cidade procedural infinita | Three.js + glTF |
 | BATE-ASA (`bate-asa/`) | Flappy Bird 3D num parque de diversões | Three.js + glTF |
+| GELECO (`geleco/`) | Plataforma 3D side-scrolling com fases e chefe | Three.js + glTF animado |
+
+## GELECO — a geleca que quica
+
+Plataforma 3D de rolagem lateral no espírito de Mario e Crash: o **Rei Bocão**
+engoliu as estrelas do Vale Quicante e sobrou o Geleco — a gelatininha de
+sobremesa que ninguém levava a sério. **Mapa de fases** com ilhas flutuantes e
+cadeados (a próxima fase só abre ao terminar a anterior): **Vale Quicante**,
+**Picos Congelados** (neve que escorrega de verdade, serras e plataformas
+móveis) e o **Trono do Rei Bocão** — chefe com botes telegrafados, ondas de
+choque rasteiras, super salto com sombra perseguidora e janela de atordoamento
+para revidar. Movimentação com sabor: **pulo duplo com pirueta**, coyote time,
+**QUICADA** (ground pound) que estoura caixas reforçadas e abre passagens
+secretas, super quique segurando o pulo, mola + quicada = lançamento à
+estratosfera e inimigos que viram trampolim. **3 estrelas escondidas por fase**
+(7 no total), moedas, corações, checkpoints e squash & stretch de gelatina em
+cada pouso. Teclado, **controle (Gamepad API)** e **toque no celular**.
 
 ## BATE-ASA — o pinguim que decidiu voar
 
